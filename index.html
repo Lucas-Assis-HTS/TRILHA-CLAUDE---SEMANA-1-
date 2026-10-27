@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Trilha Claude · Semana 1</title>
+<style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&family=Commissioner:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: um jogo em tela escura na paleta HTS; tela de título, apresentação, personagem, mapa de missões e cinco missões em sequência */
+:root{
+  --bg:#17181a; --bg2:#1f2124; --paper:#25282c; --paper2:#2d3035; --fg:#f2efe8; --muted:#b4b7ba; --line:#3b3e43;
+  --red:#b73a40; --red-deep:#93282c; --red-soft:#3d2224; --sand:#efdbb2; --sand-soft:#3a3327; --pearl:#d0d3d4;
+  --ok:#5fb27a; --ok-soft:#1f3326; --shadow:0 14px 40px rgba(0,0,0,.45);
+  --display:"Limelight","Libre Bodoni",Georgia,serif; --body:"Commissioner","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;margin:0;overflow-x:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 60px;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(147,40,44,.22),transparent 60%),radial-gradient(700px 400px at -10% 30%,rgba(239,219,178,.08),transparent 60%)}
+.wrap{max-width:820px;margin:0 auto}
+.ico{width:1.1em;height:1.1em;vertical-align:-.18em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sand);font-weight:600}
+h2{font-family:var(--display);font-weight:400;font-size:26px;margin:0 0 6px;position:relative;padding-bottom:8px;color:#fff}
+h2::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:48px;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--sand));animation:grow .9s .2s both}
+@keyframes grow{from{width:0}}
+.sub{color:var(--muted);margin:0 0 16px;font-size:15px}
+section{background:linear-gradient(180deg,var(--paper),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:22px;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+section.reveal{transform:translateY(22px)} section.reveal.in{transform:none}
+section::before,section::after{content:"";position:absolute;width:22px;height:22px;pointer-events:none;border-color:var(--sand);border-style:solid;border-width:0;opacity:.8}
+section::before{left:-1px;top:-1px;border-left-width:3px;border-top-width:3px;border-top-left-radius:14px}
+section::after{right:-1px;bottom:-1px;border-right-width:3px;border-bottom-width:3px;border-bottom-right-radius:14px}
+section.locked{opacity:.55;filter:saturate(.5)}
+section.locked .lockmsg{display:flex}
+section.locked > *:not(.mhead):not(.lockmsg){pointer-events:none;user-select:none}
+.lockmsg button{pointer-events:auto;margin-left:auto;font-size:13px;padding:6px 10px}
+.lockmsg{display:none;align-items:center;gap:10px;background:var(--paper2);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:14px;color:var(--muted)}
+.mhead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.mnum{width:40px;height:40px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-family:var(--display);font-size:18px;color:#fff;flex:none;box-shadow:0 0 0 6px var(--red-soft)}
+.mnum.done{background:var(--ok);box-shadow:0 0 0 6px var(--ok-soft)}
+.mreward{margin-left:auto;font-size:12px;color:var(--sand);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--paper2);color:var(--fg);border-radius:10px;padding:9px 16px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s,box-shadow .2s,background .2s}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.35)}
+button:active{transform:translateY(0) scale(.97)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+button.primary{background:linear-gradient(135deg,var(--red),var(--red-deep));border-color:var(--red);color:#fff;box-shadow:0 8px 22px rgba(147,40,44,.4)}
+button.primary::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3.4s ease-in-out infinite}
+@keyframes shine{0%,55%{left:-70%}100%{left:140%}}
+button[disabled]{opacity:.45;cursor:default;transform:none;box-shadow:none}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer}
+.toggle input{width:18px;height:18px;accent-color:var(--red)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+@keyframes pop{40%{transform:translateY(-10px) scale(1.05)}}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes breathe{50%{transform:scale(1.04)}}
+@keyframes halo{50%{box-shadow:0 0 0 14px transparent}}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes stamp{from{transform:translate(-50%,-50%) rotate(-6deg) scale(2);opacity:0}}
+/* ===== tela de título ===== */
+.title{position:relative;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px))) 0 calc(-1 * max(16px,env(safe-area-inset-right,0px)));background:radial-gradient(120% 90% at 20% 10%,#7a1f23 0%,#4a1a1c 35%,#26282b 70%,#17181a 100%);color:#f7f5f0;overflow:hidden;min-height:min(80vh,640px);display:grid;place-items:center}
+.title canvas{position:absolute;inset:0;width:100%;height:100%}
+.title-in{position:relative;z-index:1;text-align:center;padding:56px max(16px,env(safe-area-inset-left,0px)) 48px;max-width:760px}
+.brand{display:block;margin:0 auto 14px;width:150px;max-width:50vw;height:auto;animation:fade .8s both}
+.kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--sand)}
+.logo{font-family:var(--display);font-weight:400;font-size:clamp(48px,11vw,104px);line-height:1;margin:14px 0 8px;color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.5)}
+.logo span{display:inline-block;animation:rise .7s cubic-bezier(.2,.9,.2,1.2) both;animation-delay:calc(var(--i,0) * 55ms)}
+.logo .sp{width:.3em}
+@keyframes rise{from{opacity:0;transform:translateY(40px) rotate(-6deg) scale(.8)}}
+.subt{font-family:var(--display);font-size:clamp(18px,3vw,26px);color:var(--sand);margin:0 0 14px;animation:fade 1s .6s both}
+.tag{font-size:clamp(16px,2.3vw,19px);font-weight:300;color:#e9e6df;margin:0 auto 26px;max-width:46ch;animation:fade 1s .8s both}
+.cast{display:flex;justify-content:center;gap:4px;margin:0 0 22px;animation:fade 1s .9s both}
+.cast svg{width:58px;height:58px;animation:bob 2.6s ease-in-out infinite}
+.cast svg:nth-child(2){animation-delay:.3s}.cast svg:nth-child(3){animation-delay:.6s}.cast svg:nth-child(4){animation-delay:.9s}.cast svg:nth-child(5){animation-delay:1.2s}.cast svg:nth-child(6){animation-delay:1.5s}
+button.big{font-size:19px;padding:14px 32px;border-radius:14px;animation:breathe 2.4s ease-in-out infinite}
+.press{margin-top:24px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--sand);animation:blinkp 1.6s steps(2) infinite}
+@keyframes blinkp{50%{opacity:.25}}
+/* ===== apresentação ===== */
+.lead{color:var(--muted);margin:0 0 12px;max-width:62ch;font-weight:300;font-size:18px}
+.lead.strong{font-weight:600;color:var(--fg);border-left:3px solid var(--red);padding-left:12px}
+sup{font-size:.62em;color:var(--sand);font-weight:700;margin-left:1px}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+@media (max-width:640px){.intro-grid{grid-template-columns:1fr}}
+.icard{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--paper2);position:relative;overflow:hidden;animation:fade .6s both;animation-delay:calc(var(--d) * 120ms);transition:transform .25s,box-shadow .25s}
+.icard:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.icard::after{content:"";position:absolute;right:-30px;bottom:-30px;width:90px;height:90px;transform:rotate(45deg);background:var(--sand);opacity:.12;transition:transform .5s,opacity .5s}
+.icard:hover::after{transform:rotate(45deg) scale(1.6);opacity:.22}
+.icard h3{font-family:var(--display);font-weight:400;font-size:19px;margin:8px 0 6px;color:#fff}
+.icard p{margin:0;font-size:15px}.icard p+p{margin-top:8px}
+.ico.big{width:30px;height:30px;color:var(--sand)}
+.howto{margin-top:14px;padding:16px;border-radius:12px;background:var(--sand-soft);border:1px solid rgba(239,219,178,.35)}
+.howto h3{font-family:var(--display);font-weight:400;font-size:20px;margin:0 0 6px;color:var(--sand)}
+.steps-list{margin:0;padding-left:20px}.steps-list li{margin:5px 0}
+.refs{margin-top:12px;font-size:13px;color:var(--muted)}
+.refs summary{cursor:pointer;font-weight:600;color:var(--fg);padding:6px 0}
+.refs ol{margin:6px 0 0;padding-left:20px}.refs li{margin:3px 0}
+/* ===== personagem ===== */
+.pick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 14px}
+@media (max-width:640px){.pick{grid-template-columns:repeat(3,1fr)}}
+.pc{border:2px solid var(--line);border-radius:12px;padding:8px 4px 6px;background:var(--paper2);text-align:center;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;font-size:11.5px;color:var(--muted)}
+.pc svg{width:70px;height:70px;display:block;margin:0 auto 2px}
+.pc:hover{transform:translateY(-4px)}
+.pc.on{border-color:var(--sand);box-shadow:0 0 0 4px var(--sand-soft);color:var(--fg)}
+.pc.on svg{animation:pop .6s}
+.form-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.form-row label{font-weight:600;min-width:150px}
+input[type=text]{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);flex:1;min-width:160px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font-weight:400;font-size:14px;padding:6px 12px;border-radius:999px;background:var(--bg)}
+.chips button.on{border-color:var(--sand);background:var(--sand-soft);color:var(--sand);font-weight:600}
+.note{font-size:13px;color:var(--muted)}
+/* ===== mapa de missões ===== */
+.map{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 6px 4px;overflow:hidden}
+.map svg.road{width:100%;height:auto;display:block}
+.nodes{position:absolute;inset:0}
+.node{position:absolute;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:var(--paper2);border:3px solid var(--line);display:grid;place-items:center;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s;padding:0;color:var(--muted)}
+.node .ico{width:24px;height:24px}
+.node.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.node.cur{border-color:var(--sand);color:var(--sand);box-shadow:0 0 0 8px var(--sand-soft);animation:halo 2s infinite}
+.node.lock{opacity:.55}
+.node:hover{transform:translate(-50%,-50%) scale(1.12)}
+.nlabel{position:absolute;transform:translate(-50%,0);font-size:11px;letter-spacing:.04em;color:var(--muted);text-align:center;width:96px;line-height:1.2;pointer-events:none}
+.nlabel b{display:block;color:var(--fg);font-weight:600}
+.hero-av{position:absolute;width:64px;height:64px;transform:translate(-50%,-92%);pointer-events:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5));transition:none}
+.hero-av.walk{animation:walk .25s ease-in-out infinite}
+@keyframes walk{50%{transform:translate(-50%,-100%) rotate(3deg)}}
+.hero-av.cheer{animation:cheer .6s ease-in-out 2}
+@keyframes cheer{40%{transform:translate(-50%,-130%) rotate(-8deg)}}
+.map-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:6px;padding:0 6px}
+.story{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center;background:var(--sand-soft);border:1px solid rgba(239,219,178,.3);border-radius:12px;padding:14px;margin-top:14px}
+.story svg{width:72px;height:72px}
+.story p{margin:0;font-size:15.5px}
+.story b{color:var(--sand)}
+.team{display:flex;gap:10px;align-items:center;margin-top:12px;padding:10px 14px;border-radius:10px;background:var(--paper2);border:1px solid var(--line);font-size:14px;color:var(--muted)}
+.team .ico{color:var(--sand);flex:none}
+.team b{color:var(--sand)}
+/* ===== HUD fixo ===== */
+.hud{position:fixed;left:50%;top:env(safe-area-inset-top,0px);transform:translateX(-50%) translateY(-130%);transition:transform .35s cubic-bezier(.2,.8,.2,1);background:rgba(23,24,26,.92);backdrop-filter:blur(8px);border:1px solid var(--line);border-top:0;border-radius:0 0 16px 16px;padding:6px 14px;z-index:56;font-size:13px;display:flex;gap:14px;align-items:center;box-shadow:var(--shadow);white-space:nowrap;max-width:96vw}
+.hud.on{transform:translateX(-50%) translateY(0)}
+.hud svg{width:34px;height:34px}
+.hud b{font-family:var(--display);font-weight:400;font-size:19px;color:var(--sand)}
+.hud .lvl{color:var(--muted)}
+.hud .med{display:inline-flex;gap:3px}
+.hud .med i{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.hud .med i.on{background:var(--sand)}
+/* ===== cena ===== */
+.ctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.stage{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:14px;overflow:hidden}
+.meter{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-bottom:12px}
+.meter .track{flex:1;height:14px;border-radius:7px;background:var(--line);overflow:hidden;position:relative}
+.meter .fill{height:100%;width:18%;background:linear-gradient(90deg,var(--sand),var(--red));transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+.meter.hot .fill{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{filter:brightness(1.3)}}
+.meter b{font-variant-numeric:tabular-nums;min-width:3.5em;text-align:right;color:var(--fg)}
+.row{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:start}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
+.tray{border:1px dashed var(--line);border-radius:10px;min-height:120px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;font-size:12px;color:var(--muted);text-align:center}
+.tray .ico{width:28px;height:28px;color:var(--sand)}
+.models{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:560px){.models{grid-template-columns:repeat(2,1fr)}}
+.m{perspective:800px;min-height:172px}
+.m .inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.m.flip .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:10px 8px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;transition:border-color .4s,box-shadow .4s,transform .5s,opacity .5s}
+.face.back{transform:rotateY(180deg);font-size:12.5px;color:var(--muted);justify-content:center;gap:4px;line-height:1.35;padding:10px}
+.face.back b{color:var(--sand)}
+.m.lit .face.front{border-color:var(--sand);box-shadow:0 10px 24px rgba(0,0,0,.4);transform:translateY(-5px)}
+.m.dim .face.front{opacity:.35}
+.m.hit .face.front{animation:pop .5s ease}
+.av{width:64px;height:64px;animation:bob 3.2s ease-in-out infinite}
+.m:nth-child(2) .av{animation-delay:.4s}.m:nth-child(3) .av{animation-delay:.8s}.m:nth-child(4) .av{animation-delay:1.2s}
+.eye{animation:blink 4.5s infinite;transform-origin:center;transform-box:fill-box}
+.name{font-family:var(--display);font-size:17px;margin-top:4px;color:#fff}
+.role{font-size:12px;color:var(--muted);line-height:1.3;min-height:2.6em}
+.w{width:100%;margin-top:7px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.w i{display:block;height:100%;width:0;background:var(--red);transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.wl{font-size:11px;color:var(--muted);margin-top:3px}
+.flipHint{position:absolute;right:6px;top:6px;font-size:10px;color:var(--muted);letter-spacing:.06em}
+.chip{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:6px;background:var(--sand-soft);border:1px solid var(--sand);color:var(--fg);border-radius:999px;padding:6px 12px 6px 8px;font-size:13.5px;opacity:0;pointer-events:none;white-space:nowrap;z-index:3;transition:transform 1.1s cubic-bezier(.3,.7,.2,1),opacity .4s;max-width:92%;overflow:hidden;text-overflow:ellipsis}
+.chip .ico{width:18px;height:18px;color:var(--sand)}
+.chip.show{opacity:1}
+.chip.bad{background:var(--red-soft);border-color:var(--red);color:#fff}
+.stage.warn{border-color:var(--red);box-shadow:inset 0 0 0 3px var(--red-soft)}
+.stage.warn::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,transparent 0 18px,rgba(183,58,64,.12) 18px 28px);animation:stripes 1.2s linear infinite}
+@keyframes stripes{to{background-position:56px 0}}
+.warnbadge{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-6deg);z-index:4;background:var(--red);color:#fff;font-family:var(--display);font-size:clamp(16px,3.2vw,24px);padding:10px 18px;border-radius:10px;box-shadow:var(--shadow);display:none;align-items:center;gap:10px;animation:stamp .5s cubic-bezier(.2,1.4,.3,1) both;max-width:92%;text-align:center}
+.warnbadge .ico{width:26px;height:26px;color:#fff;flex:none}
+.stage.warn .warnbadge{display:inline-flex}
+.stage.warn .m.lit .face.front{border-color:var(--red);animation:shake .5s ease-in-out 2}
+.caption{margin-top:14px;min-height:76px;padding:12px 14px;border-left:3px solid var(--sand);background:var(--paper2);border-radius:0 10px 10px 0;font-size:16px;animation:fade .5s ease}
+.caption b{color:var(--sand)}
+.caption.warn{background:var(--red);color:#fff;border-left-color:#5a1518}.caption.warn b{color:var(--sand)}
+.caption .ico{width:22px;height:22px;vertical-align:-5px;margin-right:6px}
+.beatnav{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.dots{display:flex;gap:5px;margin:0 auto}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line);transition:transform .3s,background .3s}
+.dots i.on{background:var(--sand);transform:scale(1.35)}
+/* ===== quiz relâmpago ===== */
+.qwrap{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.qtop{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:13px;color:var(--muted)}
+.qtimer{flex:1;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.qtimer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ok),var(--sand),var(--red));transform-origin:left;transition:transform .2s linear}
+.qsec{font-family:var(--display);font-size:22px;color:var(--sand);min-width:2ch;text-align:right}
+.qstem{font-size:clamp(18px,2.6vw,22px);font-weight:600;color:#fff;margin:4px 0 14px;min-height:3em;animation:fade .4s}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.qgrid{grid-template-columns:1fr}}
+.qopt{border:0;border-radius:12px;padding:16px 14px;text-align:left;font-size:16px;font-weight:600;color:#fff;display:flex;gap:12px;align-items:center;min-height:64px;animation:fade .4s both;animation-delay:calc(var(--k) * 70ms)}
+.qopt .shape{width:26px;height:26px;flex:none}
+.qopt.c0{background:#93282c}.qopt.c1{background:#5f6368}.qopt.c2{background:#8a6d3b}.qopt.c3{background:#2f6b4a}
+.qopt:hover{filter:brightness(1.12)}
+.qopt.right{box-shadow:0 0 0 4px var(--ok);filter:none}
+.qopt.wrong{opacity:.35}
+.qopt[disabled]{opacity:.35;transform:none}
+.qopt[disabled].right{opacity:1}
+.qfb{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;z-index:3;animation:fade .25s;background:rgba(23,24,26,.92)}
+.qfb .big{font-family:var(--display);font-size:clamp(28px,6vw,44px);color:var(--ok)}
+.qfb.bad .big{color:var(--red)}
+.qfb p{margin:6px 0 0;max-width:46ch;color:var(--fg)}
+.qfb .pts{font-size:22px;color:var(--sand);font-family:var(--display)}
+.qend{text-align:center;padding:10px}
+.qend .big{font-family:var(--display);font-size:30px;color:var(--sand)}
+.qstart{text-align:center;padding:24px 10px}
+.qstart p{color:var(--muted);max-width:50ch;margin:0 auto 14px}
+/* ===== seletor ===== */
+textarea{width:100%;min-height:84px;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);resize:vertical}
+.chips.sel{margin:10px 0 12px}
+.chips.sel button{display:inline-flex;gap:6px;align-items:center}.chips .ico{color:var(--sand)}
+.result{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--sand-soft);border:1px solid rgba(239,219,178,.35);display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center;animation:fade .5s}
+@media (max-width:420px){.result{grid-template-columns:1fr}}
+.result .av{width:72px;height:72px;animation:pop .6s}
+.result .pickn{font-family:var(--display);font-size:24px;color:var(--sand)}
+.result p{margin:6px 0 0}.result small{color:var(--muted)}
+.ladder{display:flex;gap:4px;margin-top:10px;align-items:flex-end}
+.ladder i{flex:1;border-radius:4px 4px 0 0;background:var(--line);transition:background .4s;height:10px}
+.ladder i.on{background:var(--red)}
+.ladder i:nth-child(2){height:18px}.ladder i:nth-child(3){height:26px}.ladder i:nth-child(4){height:36px}
+/* ===== jogo de arrastar ===== */
+.gamehead{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:10px}
+@media (max-width:520px){.gamehead{grid-template-columns:1fr}}
+.rank{display:flex;align-items:center;gap:10px}
+.rank svg{width:50px;height:50px}
+.rank .lv{font-family:var(--display);font-size:18px;line-height:1.1;color:#fff}
+.rank .xp{font-size:12px;color:var(--muted)}
+.xpbar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px;width:170px;max-width:40vw}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--sand));transition:width .6s}
+.pts{text-align:right}
+.pts .n{font-family:var(--display);font-size:32px;line-height:1;color:var(--sand);transition:transform .15s}
+.pts .n.bump{transform:scale(1.25)}
+.pts .combo{font-size:12px;color:var(--muted)}.pts .combo b{color:var(--fg)}
+.day{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-bottom:8px;flex-wrap:wrap}
+.day .track{flex:1;min-width:120px;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.day .track i{display:block;height:100%;background:linear-gradient(90deg,var(--sand),var(--red));width:0;transition:width .6s}
+.day.hot .track i{animation:pulse .8s infinite}
+.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;background:var(--paper2)}
+.pill.on{border-color:var(--sand);color:var(--sand)}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+@media (max-width:560px){.board{grid-template-columns:repeat(2,1fr)}}
+.slot{border:2px dashed var(--line);border-radius:12px;min-height:124px;padding:8px;text-align:center;transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.slot .av{width:46px;height:46px;animation:none;transition:transform .3s}
+.slot .name{font-size:15px;margin:0}
+.slot .cnt{font-size:11px;color:var(--muted)}
+.slot.over{border-color:var(--sand);background:var(--sand-soft);transform:scale(1.03)}
+.slot.over .av{transform:scale(1.2)}
+.slot.good{border-color:var(--ok);background:var(--ok-soft);animation:pop .5s}
+.slot.bad{border-color:var(--red);animation:shake .4s}
+.slot.dimmed{opacity:.25;filter:grayscale(1);pointer-events:none}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.putool{display:inline-flex;gap:6px;align-items:center;font-size:14px}
+.putool.on{background:var(--sand-soft);border-color:var(--sand)}
+.putool b{background:var(--red);color:#fff;border-radius:999px;padding:0 7px;font-size:12px}
+.legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin:0 2px 0 6px}
+.dot.urg{background:var(--red)}.dot.mine{background:var(--sand)}
+.deck{position:relative;margin-top:14px;min-height:150px;border-radius:12px;background:var(--bg);border:1px solid var(--line);padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.card{display:inline-flex;align-items:center;gap:8px;background:var(--paper2);border:1px solid var(--line);border-radius:10px;padding:9px 12px 9px 9px;font-size:14px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 2px 6px rgba(0,0,0,.3);transition:box-shadow .2s,opacity .3s,transform .2s;max-width:100%;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-2px) rotate(-.6deg);box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.card .ico{width:22px;height:22px;color:var(--sand);flex:none}
+.card .role{display:block;font-style:normal;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--sand);margin-bottom:1px}
+.card.mine{border-color:var(--sand)}
+.card.urgent{border-color:var(--red);box-shadow:0 0 0 3px var(--red-soft);animation:urgpulse 1s ease-in-out infinite}
+@keyframes urgpulse{50%{box-shadow:0 0 0 7px transparent}}
+.card .tbar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--red);animation:tbar 25s linear forwards}
+@keyframes tbar{to{width:0}}
+.card.deal{animation:dealIn .45s cubic-bezier(.2,.9,.2,1.2) both;animation-delay:var(--dl,0ms)}
+@keyframes dealIn{from{opacity:0;transform:translateY(30px) rotate(4deg) scale(.9)}}
+.card.drag{position:fixed;z-index:50;cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.5);transform:rotate(-2deg) scale(1.04);pointer-events:none}
+.card.gone{opacity:0;transform:scale(.6);pointer-events:none}
+.card.back{animation:back .4s}
+@keyframes back{30%{transform:translateX(-6px)}60%{transform:translateX(6px)}}
+.card .hint{margin-left:auto;border:1px solid var(--line);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font-size:12px;color:var(--muted);cursor:pointer;flex:none;pointer-events:auto}
+.card .tip{flex-basis:100%;font-size:12.5px;color:var(--muted);display:none}
+.card.tipped{flex-wrap:wrap}.card.tipped .tip{display:block}
+.hudrow{display:flex;gap:14px;align-items:center;font-size:14px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.hudrow b{color:var(--fg)}
+.fb{margin-top:10px;min-height:48px;padding:10px 12px;border-radius:10px;background:var(--paper2);border:1px solid var(--line);font-size:15px}
+.fb.ok{background:var(--ok-soft);border-color:var(--ok)}
+.fb.bad{background:var(--red-soft);border-color:var(--red)}
+.stars-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--muted)}
+.rs i{font-style:normal;color:var(--line);font-size:16px}.rs i.on{color:var(--sand)}
+.roundbtn{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.score{margin-top:14px;padding:16px;border-radius:12px;background:var(--ok-soft);border:1px solid var(--ok);animation:fade .5s}
+.score.low{background:var(--sand-soft);border-color:rgba(239,219,178,.4)}
+.score .big{font-family:var(--display);font-size:24px;color:#fff}
+.stars{font-size:30px;letter-spacing:4px;color:var(--sand)}
+.stars span{opacity:.2;display:inline-block;animation:starPop .5s cubic-bezier(.2,1.6,.3,1) both}
+.stars span.on{opacity:1}
+.stars span:nth-child(2){animation-delay:.25s}.stars span:nth-child(3){animation-delay:.5s}
+@keyframes starPop{from{transform:scale(0) rotate(-90deg);opacity:0}}
+.stampx{display:inline-block;transform:rotate(-8deg);border:3px solid var(--sand);color:var(--sand);font-family:var(--display);padding:4px 12px;border-radius:8px;margin:6px 0;animation:stamp2 .6s cubic-bezier(.2,1.4,.3,1) both}
+@keyframes stamp2{from{transform:rotate(-8deg) scale(2);opacity:0}}
+/* ===== medalhas ===== */
+.medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px}
+.medal{border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;font-size:12.5px;color:var(--muted);opacity:.5;transition:transform .3s,opacity .3s;background:var(--paper2)}
+.medal .ring{width:44px;height:44px;border-radius:50%;margin:0 auto 6px;display:grid;place-items:center;background:var(--bg);border:2px solid var(--line)}
+.medal .ring .ico{width:22px;height:22px}
+.medal.won{opacity:1;color:var(--fg);border-color:rgba(239,219,178,.5)}
+.medal.won .ring{background:linear-gradient(135deg,var(--sand),#c9a96a);border-color:var(--sand);color:#3a2a10;animation:pop .6s, breathe 3s 1s ease-in-out infinite}
+/* ===== desafio e painel ===== */
+.mission{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.mission .orb{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-deep));display:grid;place-items:center;flex:none;animation:breathe 2.6s ease-in-out infinite;box-shadow:0 8px 22px rgba(147,40,44,.45)}
+.mission .orb .ico{width:26px;height:26px;color:#fff}
+.mission ol{margin:8px 0 0;padding-left:20px}.mission li{margin:4px 0}
+.chk{display:inline-flex;gap:10px;align-items:center;margin-top:12px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--bg)}
+.chk input{width:20px;height:20px;accent-color:var(--red)}
+.chk.on{border-color:var(--ok);background:var(--ok-soft)}
+.tablewrap{overflow-x:auto}
+.ptab{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+.ptab th,.ptab td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+.ptab th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+footer{margin-top:28px;color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+footer .fnote{flex-basis:100%}
+/* ===== efeitos globais ===== */
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--sand);color:#2a2214;padding:9px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:70;max-width:90vw;text-align:center;font-weight:600}
+.toast.on{opacity:1}
+canvas#conf{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+.flash{position:fixed;inset:0;pointer-events:none;z-index:58;opacity:0;background:var(--ok)}
+.flash.ok{animation:flash .35s ease-out}.flash.bad{background:var(--red);animation:flash .35s ease-out}
+@keyframes flash{0%{opacity:.3}100%{opacity:0}}
+body.shake{animation:bodyshake .4s}
+@keyframes bodyshake{20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-4px,0)}80%{transform:translate(4px,1px)}}
+.banner{position:fixed;left:0;right:0;top:38%;z-index:62;pointer-events:none;background:linear-gradient(90deg,transparent,var(--red-deep) 18%,var(--red-deep) 82%,transparent);color:#fff;text-align:center;padding:14px 10px;font-family:var(--display);font-size:clamp(24px,6vw,44px);letter-spacing:.04em;animation:swipe 1.7s cubic-bezier(.2,.9,.2,1) both;text-shadow:0 4px 18px rgba(0,0,0,.5)}
+.banner small{display:block;font-family:var(--body);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--sand)}
+@keyframes swipe{0%{transform:translateX(110%);opacity:0}18%{transform:translateX(0);opacity:1}80%{transform:translateX(0);opacity:1}100%{transform:translateX(-110%);opacity:0}}
+.float{position:fixed;z-index:55;font-family:var(--display);font-size:22px;color:var(--ok);pointer-events:none;animation:up 1s ease-out forwards}
+.float.neg{color:var(--red)}
+@keyframes up{to{transform:translateY(-60px);opacity:0}}
+.spark{position:fixed;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:59;animation:spark .75s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes spark{to{transform:translate(var(--sx),var(--sy)) scale(0);opacity:0}}
+.combo-big{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(60px + env(safe-area-inset-top,0px));z-index:57;pointer-events:none;font-family:var(--display);font-size:40px;color:var(--sand);text-shadow:0 4px 16px rgba(0,0,0,.5);animation:comboPop .5s cubic-bezier(.2,1.5,.3,1) both;display:none}
+.combo-big small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:right}
+.combo-big.on{display:block}
+@keyframes comboPop{from{transform:scale(2.2);opacity:0}}
+.lvup{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);background:var(--paper);border:2px solid var(--sand);border-radius:16px;padding:18px 26px;text-align:center;z-index:65;box-shadow:var(--shadow);animation:fade .4s}
+.lvup svg{width:84px;height:84px}
+.lvup .t{font-family:var(--display);font-size:22px;color:var(--sand)}
+.lvup p{margin:4px 0 0;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 21h14M12 6l7 3M12 6L5 9"/><path d="M2 15l3-6 3 6a3 3 0 0 1-6 0zM16 15l3-6 3 6a3 3 0 0 1-6 0z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M8 13a5 5 0 1 1 8 0c-1 1-1.5 2-1.5 3h-5c0-1-.5-2-1.5-3z"/></symbol>
+    <symbol id="i-spell" viewBox="0 0 24 24"><path d="M4 17l4-11 4 11M5.5 13h5M14 11h4a2 2 0 0 1 0 4h-4v-7h3.5a1.5 1.5 0 0 1 0 3M4 21h16"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V5a1.5 1.5 0 0 1 3 0v6V4a1.5 1.5 0 0 1 3 0v7V6a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-6 6h-1a5 5 0 0 1-4.5-2.8L4 13a1.6 1.6 0 0 1 2.8-1.5L8 13"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13l2.5-8h13L21 13v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l2 3h4l2-3h5"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 17l-5.4 2.8 1.1-6.1L3.2 9.4l6.1-.8z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+    <!-- modelos -->
+    <symbol id="av-haiku" viewBox="0 0 64 64"><circle cx="32" cy="22" r="12" fill="#d0d3d4"/><rect x="15" y="37" width="34" height="22" rx="9" fill="#d0d3d4"/><circle class="eye" cx="28" cy="21" r="1.8" fill="#2a2b2d"/><circle class="eye" cx="36" cy="21" r="1.8" fill="#2a2b2d"/><path d="M44 8l5-5M47 14l6-2M41 5l1-4" stroke="#b73a40" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="av-sonnet" viewBox="0 0 64 64"><circle cx="32" cy="22" r="12" fill="#b9bdbf"/><rect x="13" y="37" width="38" height="22" rx="9" fill="#b9bdbf"/><circle class="eye" cx="28" cy="21" r="1.8" fill="#2a2b2d"/><circle class="eye" cx="36" cy="21" r="1.8" fill="#2a2b2d"/><path d="M32 38v12" stroke="#93282c" stroke-width="5" stroke-linecap="round"/></symbol>
+    <symbol id="av-opus" viewBox="0 0 64 64"><circle cx="32" cy="22" r="12" fill="#8c8f93"/><rect x="11" y="37" width="42" height="22" rx="9" fill="#8c8f93"/><circle class="eye" cx="28" cy="21" r="1.8" fill="#1b1c1e"/><circle class="eye" cx="36" cy="21" r="1.8" fill="#1b1c1e"/><rect x="23" y="17" width="7" height="6" rx="2" fill="none" stroke="#efdbb2" stroke-width="1.6"/><rect x="34" y="17" width="7" height="6" rx="2" fill="none" stroke="#efdbb2" stroke-width="1.6"/><path d="M30 20h4" stroke="#efdbb2" stroke-width="1.6"/></symbol>
+    <symbol id="av-fable" viewBox="0 0 64 64"><circle cx="32" cy="22" r="12" fill="#63666a"/><rect x="9" y="37" width="46" height="22" rx="9" fill="#63666a"/><circle class="eye" cx="28" cy="21" r="1.8" fill="#f7f5f0"/><circle class="eye" cx="36" cy="21" r="1.8" fill="#f7f5f0"/><path d="M32 4l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5L24.8 9.3l5-.7z" fill="#b73a40"/><path d="M26 44l6 10 6-10" fill="#efdbb2"/></symbol>
+    <!-- personagens do jogador: cabeça, corpo, acessório -->
+    <symbol id="pj-1" viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="16" ry="3" fill="rgba(0,0,0,.35)"/><rect x="16" y="34" width="32" height="24" rx="9" fill="#2a2b2d"/><path d="M26 34l6 10 6-10" fill="#f7f5f0"/><path d="M24 36h-3l3 20M40 36h3l-3 20" stroke="#f7f5f0" stroke-width="2"/><circle cx="32" cy="21" r="12" fill="#e8b89a"/><path d="M20 19c1-10 23-10 24 0v4c-3-6-21-6-24 0z" fill="#3a2a22"/><circle class="eye" cx="28" cy="22" r="1.7" fill="#2a2b2d"/><circle class="eye" cx="36" cy="22" r="1.7" fill="#2a2b2d"/><path d="M29 27q3 2 6 0" stroke="#2a2b2d" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="pj-2" viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="16" ry="3" fill="rgba(0,0,0,.35)"/><rect x="16" y="34" width="32" height="24" rx="9" fill="#63666a"/><path d="M30 34h4l-1 12h-2z" fill="#93282c"/><rect x="40" y="44" width="12" height="10" rx="2" fill="#8a5a2b"/><circle cx="32" cy="21" r="12" fill="#8d5a3b"/><path d="M20 20c0-9 24-11 24-1-4-4-20-4-24 1z" fill="#1d1a19"/><circle class="eye" cx="28" cy="22" r="1.7" fill="#1b1c1e"/><circle class="eye" cx="36" cy="22" r="1.7" fill="#1b1c1e"/><path d="M29 27q3 2 6 0" stroke="#1b1c1e" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="pj-3" viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="16" ry="3" fill="rgba(0,0,0,.35)"/><rect x="16" y="34" width="32" height="24" rx="9" fill="#efdbb2"/><rect x="36" y="40" width="14" height="12" rx="2" fill="#f7f5f0" stroke="#93282c" stroke-width="1.5"/><path d="M39 44h8M39 47h8M39 50h5" stroke="#93282c" stroke-width="1.2"/><circle cx="32" cy="21" r="12" fill="#f0c8a8"/><path d="M20 22c-1-12 25-12 24 0-3-7-21-7-24 0z" fill="#b5542a"/><rect x="23" y="18" width="7" height="6" rx="2" fill="none" stroke="#2a2b2d" stroke-width="1.5"/><rect x="34" y="18" width="7" height="6" rx="2" fill="none" stroke="#2a2b2d" stroke-width="1.5"/><path d="M30 21h4" stroke="#2a2b2d" stroke-width="1.5"/><path d="M29 27q3 2 6 0" stroke="#2a2b2d" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="pj-4" viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="16" ry="3" fill="rgba(0,0,0,.35)"/><rect x="16" y="34" width="32" height="24" rx="9" fill="#93282c"/><rect x="12" y="42" width="12" height="14" rx="1.5" fill="#efdbb2"/><rect x="14" y="40" width="12" height="14" rx="1.5" fill="#d0d3d4"/><circle cx="32" cy="21" r="12" fill="#c98e6a"/><path d="M20 18c2-9 22-9 24 0v8c-2-4-6-6-12-6s-10 2-12 6z" fill="#2a1d18"/><circle class="eye" cx="28" cy="22" r="1.7" fill="#1b1c1e"/><circle class="eye" cx="36" cy="22" r="1.7" fill="#1b1c1e"/><path d="M29 27q3 3 6 0" stroke="#1b1c1e" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="pj-5" viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="16" ry="3" fill="rgba(0,0,0,.35)"/><rect x="16" y="34" width="32" height="24" rx="9" fill="#3b3e43"/><path d="M26 34l6 8 6-8" fill="#f7f5f0"/><path d="M32 42l-2 3 2 8 2-8z" fill="#efdbb2"/><circle cx="32" cy="21" r="12" fill="#f2d3b8"/><path d="M21 18c3-8 19-8 22 0-2-3-20-3-22 0z" fill="#9a9a9a"/><circle class="eye" cx="28" cy="22" r="1.7" fill="#2a2b2d"/><circle class="eye" cx="36" cy="22" r="1.7" fill="#2a2b2d"/><path d="M29 27q3 2 6 0" stroke="#2a2b2d" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="24" cy="21" r="4.2" fill="none" stroke="#2a2b2d" stroke-width="1.4"/><circle cx="40" cy="21" r="4.2" fill="none" stroke="#2a2b2d" stroke-width="1.4"/></symbol>
+    <symbol id="pj-6" viewBox="0 0 64 64"><ellipse cx="32" cy="60" rx="16" ry="3" fill="rgba(0,0,0,.35)"/><rect x="16" y="34" width="32" height="24" rx="9" fill="#d0d3d4"/><rect x="38" y="38" width="12" height="16" rx="2" fill="#93282c"/><path d="M41 42h6M41 46h6M41 50h4" stroke="#efdbb2" stroke-width="1.3"/><circle cx="32" cy="21" r="12" fill="#6b4230"/><path d="M19 24c-2-14 28-14 26 0-2-2-3-6-5-8-4 4-12 4-16 0-2 2-3 6-5 8z" fill="#1b1416"/><circle class="eye" cx="28" cy="22" r="1.7" fill="#f7f5f0"/><circle class="eye" cx="36" cy="22" r="1.7" fill="#f7f5f0"/><path d="M29 27q3 2 6 0" stroke="#f7f5f0" stroke-width="1.5" fill="none" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="title" id="title">
+  <canvas id="bgfx" aria-hidden="true"></canvas>
+  <div class="title-in">
+    <img class="brand" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKwAAAEyCAMAAADgLbjvAAAAY1BMVEVMaXH////v27Lv27Lv27Lv27L////////////////v27L////v27L////////v27L////v27Lv27L////////v27L////v27L////v27L////v27Lv27L////v27L////v27LQdofHAAAAH3RSTlMAEEDwwIDwgEDAEGBgMKAg0KDg4CDQsDBwUJCwkFBwnLwuswAAAAlwSFlzAAAsSgAALEoBd3p0TQAAIABJREFUeJztnel6Kq0SRtU4x8RkZzJmMPd/lftRY4RmqioKpbvf9eucb5um6ZZlAQUMNBmqXq12vnpVWwC6xO2iT69ztqvgJgAAAja7HslqeL+DrABoJ/e7Hslq+LCDrABoJcPFrkeyunvaQVYAtJJDpNEbWX1Nd5AVAK3k7th6eyKrzW4HWQHQSn4jjZ7I6n4HWQHQTm5PrbcPsjoMzkFWALSR7a5Hsrp72EFWALST+12PZDWf7iArAFrJ0Ig0ui+r290OsgKglZi9ou7LaruDrABoJ3fTXX9kNXzdQVYAtJNb21XdltXzww6yAqCdbJqtt8uyagSRkBUA7eHeab0dllUziISsAGgLzghOp2U1cysLWQHQCobOCE6HZTV0g0jICoB24BnB6a6svGKGrABoA3Ovqzoqq+PmVZAVAC3kNtB6OymrL7+YISsA6mcbar1dlJWTnwFZAdAW/KPNHZVVuLKQFQB1Expt7qSsjM2rICsA2sVdxFWdk1W0spAVADXjT1noqKwCc56QFQD141t00llZheY8ISsAqicyM9Y9WQXnPCErAGonNjPWNVn5lj5CVgC0AkLz7Y6s3M2rICsAWkIsZaFzsorPI0BWAFQMqfl2RVaJeQTICoB6Sc3id0pW3s2rICsA2kByFr9DsgpsXgVZAdAC0rP43ZEVZWwOsgKgTsihRgdkFdy8CrICoHYYoUb7ZRXevAqyAqByEot5uyWrVIo+ZAVAtdAyjjoiK3J/F7ICoDaIGUedkFV88yrICoCaIaYsdEJWnP4uZAVAXTC7Ra2WFS3tFbICoEIoGw90RlbMGBKyAqAeGCkL7ZcVNe0VsgKgOjjZkW2XFT+GhKwAqAXBEE5rZUXavAqyAqBKJEM4bZUVK5UMsgKgKqibpHRBVrxUMsgKgJrgpiy0WVZCL0NWAFwfwTRga2VF37wKsgKgNqTDzW2UldzLkBUA10Y83NxCWUnSMyArAOpAPtzcPlmxNq+CrACoClnKQjtlxdu8CrICoCZyhpvbJqvMukJWAFwP4aqTVsqKvXkVZAVANeRNjbVLVvzNqyArAGohc2qsVbISrXx0GFZQEwD6h0b7bYus8qYR/viqoCoA9A6V9tsSWYk2r2pvdQHoFBkr5NrWerOnEc7MK6gOAP0ifxr/QBtklbGayGF6V0GFAOgR+dOA7ZFVzmoil+kMg+wAXA69WKMyWc1ctqqu2utq4SnF5VatUnfz+f7qi192u93T8X/NZrOv+bNaOQDUh2KswZbV3Xwz2y4Wiz9d7hvednar0+jU6pVPvsaf53tDpW9kuriffcFZoIvkruY1oTfJ4XyzXURLfrjf5I5f61UsmyxZzTf37Hz7xfYWA2qgY+jMA/62ENKjmc9eqfmnD9ucXCbFmuUildXwaytfFzR93UBYoENcVlbzGbvtvd5KB7EVa5aLSFZ3s/zRxOm9+PEBUBmXk9Xw9lXY5XyVjU8r1iwXvqzutvnLn3553WAMC3SBC8lqeJuVizmdCdqbXsWyYcrqWc9UR+ThKQDVcBFZ5ZnqyD1bVyp10oElq1uF7WscpvfItwctp7ysnu+VJhy5utIpVQXGPOlGOag684TwCrSa0rLSDBOYCeN6BWdDldVwJhD702K2mR/ZzKIJIaLeNACVUFRW6mHCE6cvo1t0FkRZ8Y/rmN7fNv1zt4l1uvm9aQAqoaCsRGFCild6cKVfuBiSrOZss98H0tCi0xnQFWgpxWRVRFWs4KpI8TIIsmJvXfO0iXn7OfL4txi7Am2kkKxKqWrPjPiYi90An7SsuMuenpK5Z8PbYKQ2pT5CACqijKyyzkpNQuwKlrwFJilZDZm7l05JabKRX4wn7MkMWkcJWfEHX5g8kGxV+CY4JGTF3aWH3I97DvctF+gLgpahL6tnJ1lhv23JbPa1mc1mrzqbZ5H26LR3lZKu9UncyL3CflbMwzqmnKgoHOMiuAItQ11WjQu6c+tfGpsoC3YU5na1KHex0XjZzMM6HnizeZEj1l4xLwjahLKsGj3AhffXW0Mbkv3PNet6QCU24bqK232L7FpNG/oCoA5UZdWwUDijR+FEVYmtFA+L2HOv8QZLu2owGEYeNiNtDYAroymrJ6tVLGI2UTikQmArpdNNT2j0osq7Kr5z9RP25wNtQb1r9EtqOEfDVnxZqA6yvyq8YqarBFXes4ldE11B0BIKyeoh+YOtcFAFP8xQOiDxiMLo+h2zSOkgWXQ1uUpvFoDilJEVZSgk+nNPLIb7dBTKPJO/QdSQKWxxLDePXhYpV6AVFJEV7bdaYbh7y3zE8UbLJP/1cp+AfJAsbkXRSBgAF6aErIj9Cg1zMPtFdcmK++wz+muJXcWYuVsAXIMCsiK3KYXQijniXJWsuANWObOPqS0QJYkgAFwWfVnRf/81Mgl4RzFUJSuuq3NmH5P7tT6hJwhqR11WjCY11CiPtdtJTbJiP/mMHAPCk8a4FagdbVmxvvMKh97wOkcVyeqZnbqR0QukzILCVqBylGXFG/tQySjndAQrkhU/5UteFi1FAvlWoG6UZcXbgvJZpUxG96geWfHv5EFeGHHhOPYPBVWjK6snZlVVduljjA3XIyv+CWX8I+hPkANYnIMKakZXVtwxYJVBK0ZEUI2sBDcilhV9YdMUw1agYlRlxQ2slEqnt7FqZCU4+nUqLCq2Q0wTefQGQHFUZcVd/aIlD3JoVYus2PmgGeWxvKiy9SkARVCVFTsNWmeEnR5a1SIr0e4PshEl3gsW7kEDwAVQlRX/dpUKpoZWlchKlg0rmqzjxnAam3QBUARNWQkm1wVjNz6og2WVyEqWXybJXeAMWB3BjCColWLHx9PQ2g2POA1ZiayEK7gFXTT+0RzsSRIALsSVZaVVPLHoOmQlHanj9wMl9cU2x6BSriyrL62yaVFHHbKS7lfKT16QhHAIrUClXFlWavagZU3UISvxQB036JFZEaEVqJMry0prOpAYD9QhK3GJzAxz7hbvvyC0AnXSFVnRcryqkFXGTfBGraTvFqEVqJJry0opd4HYD6xCVjmPnDMhKAyssOgGVEpnZEXKQqpCVjmrtzmPWP5qkcYOauTastI7dpTSwqqQVda+OIzFe/JTZLFCENTItWWlVz5lpKUKWWUVSt+KNWMb1ox9/gAoRndkRdmVtwZZiXZcOEPeKj2nt4l9rUCFdEdWlBn3GmSVew9PtNgq6+ggzAeCCrm2rFTOjDhCGLSqQVbZNab1BLOKYW9MBkB5ri0rRX0QjpKvQVb5T5xkq6yZCyQvgArpkKwIGZPdkNVuSvBy3lkcwroBUJAOyYpQfEdkRRlUyrs+Mq1AfXRIVoRNCTojq6StMmuKLfhAfXRIVgR7dEdWqU4vZAU6R5dklW5hHZJVIq8ss6bIXQD10SVZpYeduySruK0ya4qT5EF9dElW6RZWg6zUNkfd3UcSzSEr0Dm6JKt0KmMXMtgNIktvMksh5EYAcGGuLavMlXLM8juwNtAibCsMsIPOcW1Z6W0V2hZZadZ49xBKiMpaGghZgRrpkqzSiVZVyEp4aqCf4NKbvMti2wVQH12SVVofrd8p1CVkq7wtWKV1A6AckFW50gJoPvKwrfhnMRtgITOoEMiqXGmXuIldKIMza4sYZC6ACumUrJJbp7T83MAQPltljbAjcwFUSKdklZzDavmJzEF8tsoYx+efUw9AeSArMeJ3IzvVPYpn6U1GP5CynT0AlwayEiN+U8+ad/GL6xfxGafIsgJ1AlmJkb9P1UyrX1xbiTc2phy9AcDFgazEyF9VgX6gZ+mNOIDD/jCgSiArMfLXWaIf6LGVMLRCYAXqBLISk/E+dZPYTzRtJRy1wogVqBPISkzG+9Tb08qief6pqLv5mlEvAAoCWYnJeSl5B2UFaS69EWR0TbGGGVQKZCUm54UWGWJ3bSXoCKITCGoFshKT80YzkqDiTO2pPPZOf5ucWgFQEshKTNZbUd56wcC2FTOPHbnroF4gKzFZ77RYaJVlK7gKVAxkJSbvpZYLrRobvDBsBVeBmoGsxOS91WGhCcGdIx2yrbCLFagayEpM5mvN2h0vgW2rO1KXc4pNrEDdQFZict+r/rZWZ16tbKkhoahF6JwcACoBshKT+wI1DxB0aCy92SSCqylSFkD1QFZisl9t1pkOKRq2GsZWNU9nSFsH9QNZicl+tyXH2N3zT5+3gejqCaoCrQCyEpP/etXPubFwz+i6fXV89XSPcXXQEiArMQovuGhH0Hui4Hxzv/gN6J4W29vkeUCX4HFVw12IWI4mH+ObnwP/xp/fbxnXWr+fr/XzMv78HrEv8bJUrR2f5b4OPxnPY736HP8LPQPISoyktg3KdgR301asSl7+/KN+9NQObMbjj8kq3izejD8Yp8tZGx//CH/q+8W5l5uPlUgY75//nGv9/Lx8vnMusvqZUD/qfZA34/Hj5H0tuf8960/P83hk1GDtewgvn3/CgqzESGrbpOiMYEt2KJ78/FBjCL+sThKaRIRl/mW6tEfCp1ehm7l55Db39cRnqtPV6AHWv58bqiljD/LmYyUQ1so11e/lPmlXGwXf7s3j8c1CVmIktXUotVfMifpttbwhBTsHorLa9zyC7WJkfOoxeUvmJf0fWYX1svcmp/uzfoxdan8L3zQFvf/8/HwTC00U+fPCDBDjz4Og7+VH9H4On4GsxEhq61Jmh+Mz1dtq8kMKdg6kZLXvtQUuZf5pqulMjM96x9NGoSji3DypbX05SV1qH1qQLjUOu9WBUCYxINoziqpqzyTxPN5v4n9/+BBkJUZSW5fCw1b1r04+fM/DA0MWBFn9/Iy9jezd+MRnohij4Xgb/yfhLm5oYzXpZn5uq6lLHT5JnKwglZoyzC9LyvP4F/09WpEeAGQlRlJbD7SVexnUbavfryntV5wkqx//MLNhhcTIjtlyPG1/nQyrjqSUOCBq74coq+PDIYZWtGJJxn2j+TY2+J90FWSViaS2PkquaD5Qta1+v+nJcaQDRFn9vHjGjMwGER/ZiWvtLdFhMe4iFZgsidojyeo0g0mL6KgFp7uzqQ4c4Vpv6b89fA6yEiOprZeCW1sdcU4UrIc/hZBCK6qsfm48EZHhoGj4YY7Fu9HAitw2k7aihmg0WZ2G6WmTFfQ6JOYK0kFR+nkQQrPD5yArMZLa+hEf9E6lXlv96YfSaaLLytd/S/TufIW4gRWnbSZsRQ/RKLI6p4aRJivoRd9EbaXxPNwphvEB02GHD0JWYiS19TN80LwvH7Xa6hzFkDKEDI98j35ZTSZj30+z46OlIYeXcBlmQqgTWHk6LOPJ+2g9GLyNvh/d24jYytcHHE9Wo70b3kajyefYuN/0oznnP5BCK6PQ04Mcfdtl/r2ZiK08rto/j+VgMPI/D99F7DLH3+cg+211usbh/0JWYiS1DVDeVs3zTyvBsA8l+dr4uB0/LFduspJjK/MXPBx+mBdq9k3XzbY8ttOR1pPmB8LTnI6r3Fzvt+9T8lH8sTRMTOlRG+U2y3RuLGwrJzgc2w/97bP5Ac/YpCW8F+fFHNcJHP4nZCVGUtsQxacEvQsFr44ZqFBCq6CsDr5q/pA3P2I26KBEzIRQp2U12vHYo7zvRvMMObgxD3gz8StmufpwheLBFDFlssL4uPNv68dGHf4FXs2y8cQ9SSPLpr7dDrj56+C/9bdHyCoTSW2D9NNWj/GvsUNMVq4obpptx2zRofAj9hlbML5BfE8qtj8sebc/9BGJhvbhWvhffwu1ak4IrYxP+4psxKmBnqVd00CeQ+N5OC9lQPkJOf4RZCVGUtswF7BVdcnsa+trTMgQSshqsLZH4JttzCwvFH7chD8ysi7+ElSCPWHoHaax5ZLy9DK5iObbuhwhtIrLajAY2TfovQFbuONgZGzfXPOlmKFswrKQlRhJbSOUt1V1S28av9/p0Colq2bw07yiWaC/bZkDKM0irE7gR6TXag/l+DqC1m3G59tI2P0xQo86JavG+L8bDzULjQnStnfjpRg/Aal1DJCVGEltY/TOVuZv6g8ptErLyh6ubbba6EzfAaMBNkMA68rxKTfLVh51WCGlgquak3LpyYqkrBq28rhokvh3AysGa7xmQ1ap24asxEhqG+UCtqrqaEAnvyaZIUSQlX3V5tffCK28i4NHkbsxA4lUcvp77CYaIWW+q5ysynRolZZVw1ZOaGX1ZFPpEpZN7dAKsgpQt6wuYauKlt4snZyeZIYQRVbWsG/TSOb0o6/XOQ7fjNnevL0iC1OZjjqswEphm9TGaD1lpxiCrOwX5IRO5khUWo6mnu3QahQpowFkJUZS2wS9spVnb5RUaEWSldXGmiowruDpda5pf0nZNeolcilzxIq430QUN7E/2aOmyMqeUWj62Yzm0usRl8GPG4Wk7hqyEiOpbYpL2KqWZHZP2nmq5ZJkZcVAzbm4WD/P+v1vNpx15KI+RpHPmyulxZsI++t0IhWvkWRlBakNQZuFUnLmzZdiv2b6XUNWYiS1TXIBW1Wy9Ob87TVWyySaLk1W0Y32Ih29aGBl9npIq+/CN2H22sibppNKOss2FaTQZBUxdCzR34v522T1Gk11x8fvICsxktqmeS6+8qYSW52/o6tzhzAxakGUlWmDZo/N/LdI0qjT2I1uHSWwskMP+yY+I7cgwDCKMSae6JnRZBVRUmTa1E9wHblZRtxWkJUYSW0JlF8nWIWtzt/dG7O5xRsvUVZmS3J6lsa/NdRoDnY1HWemWRCHxIM38RK8AxGPxtXO8V/CIERZBSckzH8gnl8TSre1k01iw4GQlRhJbSlcwFYVLL05e+ez8X9IfxSXlRG7OBkKZttYhv7Fmd56D/5VkEngJkzvsU7a8mOYfmReO95XJcoqqHajV0zbID4yINjYdSEcXEFWYiS1JdEHWxmdpLUVZkVNQJWV2QVzYjWj/U1o/2Cbh3oUjxl8mA3QvDnipWKcHfDC2CmGeg+G9q3er2EeanT4HiqzOS38GNIVZCVGUlsaw+K78V3dVmftHBrV+cc1OuJMlZW1XVPz34wAyvqFNxqTq0zmXjYDu1JWBCXwXgSj77qyKxHtUVNlFTKM8TyoiWJmRGm9lObmDc5OMycgKzGS2lK5gK2uuvTGiDoO7fj8Ax4NrciyirnFHJpa+f/GDRZeqCWnb+LT/5+FnNV3fHLnhh+NeKiyCi0zNv4zOQPfeIaNba+astofBOa5LGQlRlJbMuVtddWFgs059nXoe2xDlpXRS3GFYIQ2RtfGbDFuUBL9xwABKwmCkjCGeR+blYvdKFVWoRiV/PcG4V8Q7+bI7jmrkJUYSW3pFD9F4pq2Wjtf2/MXOZYhRJaV0WTdIXsztDpfJj4KI2mcgf4euRIUjIHuo5uMRxsLrcj18d+tUQp1fN16Hs1fEP9W7s1zViErMZLaMih+QtcVlzUbYvj99TS+rZFwQyIrz7iQ8a9/SQWJbZUksvr234SqrP45RZyfbaxHnSkrY5KAPu4WkVXwQC/r4HnISoykthwuYKsrLRQ0xPD363/+skZCKyVZmYnZa/cvfIt+JLIKtGhNWXkcT9vF4Mqycv+osW/iHzdGJSArMZLasvjq6rJm41s7iv03ByVZmZHdqZfo7RqeqVRW58DqxvffwqHVlWXl+z1w9tD/5XxyIWQlRlJbHh3dhMEYMzoPcBvRTvjrryUrc8jl2KBXieIlsio/ZmUkFpwDEKMq4XRwPVnRFh8NEt3Age9wiROnoBGyEiOpLZNubsIwcb+G9gr/YBuWyMrbLh6bt5BKTciUlRlJMGT1d6Tf/mRCD8alzh9YUnrU5Pr4H8yS/PcG6ZwN94SiI7+DBZCVGEltudx1caGgv59C2Yub3M4N83nbhZGn8DKgRApGyyHnFQXyJ8yTWhNXSNQisG+dIYXgZAVZNsYHA6kLxNVHxMTaUfMcMKN6kJUYSW3ZdHBZs9FNsdIKjB/VUIYQWVZGPOAXQuNKTqQV+Tx5PV+gcUbTKmwSrTsQjBqd3GBoZYggegfmXIRppcQQnxfjBcee4e9RiTaHtwJZiZHUlk/3bBWSkiGxUIYQVVbBlR1/2EFJunkb7SdlmD8CN2FkNKTGe+KyWocuZNxsyApUWa0CH2SEh57bTQnOPdn6sEkhZCVGUlsBw1fNm/Zy0VF24+vf6O6lT0CnyoqwR8LY/IR/FM3En/UeJbRzlrmQOdGFOn/QJ6tgOEiYqws4KFaGdSmjq0ndmDnkvcCnG6NXH5BVDpLaiii/9GZ7sbrEhJPuH1FlFdme+IShkm9Dk6F87Og+Dn4+QzdhXCqx3iYqq0gWudHQA8+JKg7jB8R6J+GNdoIY8R7J9/Zpg/unDlmJkdRWRnlbXW7lTeR8ADehoAlRVsvQPm8m5wb9z2h5wZHfH8JnbILHosd2Vg4V6ikzMrmWSsQgy8qMDq0eZWwHaD9m15zWk7YPnv+ErDKQ1FbIRvO+fVxux5jYMt7o8uMBXVbBHXQDH6KkUcaPxWHdhLl/UzxKiz2PZazXnOxRE2VlppXbj8YI3mjPw6w1dY6icYAXZCVGUlspxZfePF1okN3c22DcxJjD83fHiLIKnk0Q/FTYCSfMAyNIoUT4JsxnEN+5LnZj5kakzpNMhpbGLUTKNzu/jaEpcyN5ynyguWkVfe2zfd4/ZCVGUlsxxW31epl6WGcRx/AKgSYr8zc8MvrrW+kfVpvZi0mf6Rk7esr2WLShnz8W3ZUrjje0osnKDKwaL8Q0LiW0Ml8Kfed5e4MMyEqMpLZyiiezX2QLBuss4ijeBkCS1ZvZjCMdDk9zj7UicwAlPeYSPWnVjNKiY80RWfk3VfHhrZTxuXDx0UOXzVNc06N4a/N5MFYZWQmukJUYSW0zKG6r5NNTgBxYJU93D37hl2Yriv7mu0dCx0aQrKNEk83tI3YTlsliDT3yqcCqXw/eOND4WLB0awNPR3mWLZNZ/eZLoa8mbKx+hKzESGqbQ+mlN9Pyw1ZmXyqF7ytNkZU1hRQdXXJCq3j3xOwTJU7jtD3o3kTin/8wW6oNPbDy69D451DhVjDk8bipy3+JjrH1I8XZH9Xa8AayEiOpbfTm5vP5c+wDpZPZRe+PhRvLRPDoiCArq1kkBlOatxM3kBVaxVvnKnETtibDxYaFQw+s/KGV8c+Bst/MYMgnPKuSL9HnYT1oTmAFWSkhqa2Xu812ce7jPS22twFnlbbVRq1KfuiDwj/+DKGkrKw+YHpVR7LAUOk/P/8iZrPDHl8gMUl+4oDZUi0scSbxLIgx/sRftDXy5+9KWs86Ziu788/aF8cYNsOYVQaS2joMb199Y1FP91/eTxdODy2cbcUKrHzf6pSsRrYNk+PgvFZk94tuQmP3S/uqfgXaUg2NWwU/EdhWM4AntjM+6C258aq8dbUPpbkJPT47t9Odn32PaG5p5eL3S1Z3mqVJattgHpHP9N4XX5W11YNCnSKYB6pPAkTPVo/Lat1YrZ8aSGmEVuktL7/t6z96rz+ye2g3/kH7xulTL/447fwBW1ZmYBV6kOZaYDd0My6QrkNoMK9htE/v83hvPA/3SMabSXBio895VqqlSWprMV8kSlh4KrTVrIJD0fyF2PHsf0QX4cVkNWrONKYGwQeNxkBIq27Y8GbiVGPUjHlCXbyG+OyTEU6c/9mWlXEfYcUG1yYO4rJaruywL9LFa3yQ8jz84fKH9+Fb+7K/9C2DvSZZJVW1Z+FGV2XTQ0t2BI2f2Mi8Wyy0Cslq/f7ojjhT1nQYAQ4ls3HZbMY/j2YnZv3t/Hu4J+pkcYwb5+StV6EtBGmbrZifcp6F8W/2A/n+cAYWw8NRziDkzaNZ0vrbeSue4bPx7182jwl8e2z+JWQlRlLbP8ijT26sU9RWBTuC5rBzJKEp9jHz0OTfzs7neOwfwKFNkI95n3/zTBG8PE4m76vJ5MMzQxeRsiu+w6WOuxhPJmO7JEtWRiuOTa2FtncZNNZl//JorXc6E4tQfc9jvH8e304Ngs/j/AoO1d//p/Vo5fz69G7XhYFmYqWkticYB9c8OMHOvGR6aLmOYPR4dgPjW9oceKaPK98Qk3n+ep201bje1hkmOqHvs1UQ80lQdzwwe9TNAEypDszn4X3vtJf62Lv9rAaUrhcVSW1/YQ08TZ39W4oms0dTvTKINR0Lc4Vuo6GQZRVLLPBfkpqpyGmd/hH4P5aMOT1TVtHBKF/dPKEVueBxYpaC9TxSdxnm8E2ArMRIanuAnS7l7OR596RYjwalUkPJuziZAyHCGfsP8iEGp/UclLXJv7dHDojS63Xpq4+MBxF5Pg0iPWpBuQHeyPmpgWuRXuphKKxnstKcS5PUds8zP7XTOS+rZHpomY34GLu1GU24sZkITVbBDCgv/4iN8o8lTTGkjuiKGpcY9xeJPJuEpzRopY4pAerSc76D73mE3grlpR6fZc9kpVldSW2lfTjnTIeCtiqztRVhp+ETYa9Rvtee+fMoh/CDHljteScoZkzb/Dh0anqTs6xI26D+YuZH2PdDKfMftWv8TXkelG0NQ/zeSM9kpTmTJqmteLzJtVW59NASY+ymgJLHoQTFlv5ec1X1G36QT6w5svxM3QZ9se47pRtlZGERJ1WP9xkUW7rIF8Z642Sw+S8S7CZf6l9M1jNZaa63kdRWHhG5J9AUs1WJ7RfMrl1SJ+ZYvNVkEt/rG39uYYIV/QyIM+tY82QaM3AM8bmlWxne5jKA5KWDXcZ4iT//PskzFEeizyMeor0n3up5mqJnsnpWLE1S24zem2urYsns+qGV+RNPiGKMr+9L4L87jCesFbLWvdG3rjyzngQcM+ZsgXLkPdzUm9owA6t0hc2A1hqWizzIfx/fTFMdi/oMPI+P5PNYf4dfrJnZ3zNZaRYnqW1ONOQOfJdKD9UPrd6N/cEJUUzo45/OZuPj8T4H8XvEDo0MJvzA6sja5YcuAAAKJ0lEQVTbpNnIbj6+Zdda+nLwXx5XztWMR0BR7OT8cSsO8z3I8edkshqxu9Fn3j6bM6U3H8289ADLd08SafOv+yYrxdwFQWWz7OI5gaaUrS53MlcNLPmh0JnRap/6fWzq7znKHAyWo+/TtT4mk3dJeHN9Rt+Tj2MdJhPuT8h69D05ydj3132TleLxxvy6ZiZzepbCFEoPfeLXDYDS9E1WivXl1zU33cAzllTIVpfYjx0AHn2TleJ0ILuq+UeVepbClNmZ3R3NB+Da9E1WQ73SuDUd5gdBvidcJj30QmeeAkCnb7Ia6K2q49ZU41H7aljEVv0aYgetoHey0hthZ1ZUJcXL/4gLpIde6IBmAOj0Tlb5A0cnmBXVedL+KhawFfqBoDZ6Jyu9MyOYFdWZtguMfOsp+AT6gaA2eicrvc1CefXUyt8MRDzq6aGYDwS10T9ZqQ1a8eqpVWwo4rlVTria8qoHQHH6Jyu1HhOrmmopE8GRb+300MIHngLApX+yUtt4gVVNvW5acORb2Valz5IHgEn/ZKWWacWqpt58nfdc+QO6CVdIXgCV0UNZaW0DxaqmXi5qZLMpVVthMTOojB7KSmt5IKeWipv+xZ6y6l7HyLQCddFDWWklL3Bqqbh+Oj5Np2gr7LwA6qKPslJq0Jxaaj7meMSjt9cx0kJBXfRRVkphDqeWmtulJ2qpNu9Y7iB5ACT0UVZKo92cWmqeBJ2qpZatICtQF72UlU6lObXUlFVSIkoJV8hdAHXRS1npzM1xanlRWSnZSvQ6AShGL2Wl4w5OLfXSrEjds2eNhCvICtRFP2WlMqxzrVpSxpI00kMhK1AX/ZSVSqTDqeVlu4F7W+Xv8gBZgbroqaw0qs2p5cVlpZBNhgF2UBc9lZXCSTNXk1V4JbNNrq2QugDqoqey0shi59TyknlWf2SOzEFWoC76KiuF7AVOLS+33MYkz1bUCA6Ay9BXWSmEVpxaKj5mzn7D85zeLhYyg7rorazyQytOLRV3XWA95ZxyOeUAUJ7eyio/tOIUpnhqPW8oSb7jPDbfA5XRX1k9504Isqqpl8LO7J2JnYzMBVAZ/ZVVdtVZhakdAMY9Ikucy47JQFAZPZZVbq4VqzC1XabYh49Kj6DG+DqojB7LKlcgrLLUNmHnJxTIXjEOOQW10WdZDfJW+16yrD8kDhEVjSErUBu9llVeQgGvLKWDoLfMKoqriR3YQW30WlZ5W6PzilLqBz5zqzgQzgjiIC5QG/2W1TAno4BZlsryQNm2LQJRssfxAShNv2U1+MoojVmUynygsHPGD60wFwiqQ2ko5UALZZWT/8QtSiEvVJpVzg6tkL4O6kNx0VorZZXREeQWpRDEike9uU7G8Dqoj77LKuMBcEvK3/DvQVC/I8zuLpKsQIVI85t9iGR1lW3pTMQzguySskOrjIEknig38oIAKEZuAzJop6zE6ZrsgrLmHoU5VidY/UCMWIEq0Tm994BIVprTkTJZSbdf4JeUNyH4kJP6xJpIwYgVqBLFyEYkK83pSGE3SZi/ICgp52FP72S1O8IZmsMZXKBOspK4Fb7kmiP80jEdWXQnKChnhDAv3OHs/ifKkgegOGp7l0h/kfXKlw9Ai7KtJAXJO725KeX0krCRFagUxelAmayUtiPY5chKtEPdxQra5Q5YDTiykudHAFAYvRF2mawU+6HyqX3JILuoIOFvQ96A1YAhq/ySACiF2oa7QlnlLM9rkJGHdMe3lawg2YRC/vwctSSkWIF60Ru0kslK8eCXnNW3fGcKQxDJj4PCHgiXKwmAUujJQjjlrRfaZW0VwJa2sDRBaqjCMBJx0jV7aAyAkqjJQigrvdAub18T7n1Ij1dn9zinCrkEtN4nBqxA3ajJQigrvdAucxMm5q5P4in+S1nRhPaLhF2sQN3k7wbwizTzOfts5BO5bY13I/IjFXiD7BoJ5bQfBCyzAbWjJQtpq1JLYs8ODFhPImO5L6scjYRykh6RDQqqR+tMO3EIoJUXmt+LYSV9ZViEYSuV+TnKoD4mAkELUAqtxLLSGjVTGHLh3EpOr4k+q6ExjkSpFVwF2oBSP0w+uKKwPfnugu36l5xzQMnrbjQ27aSMSsJVoB3ohFZyWSllsatMZs3p8w05SUlUW2mcjEwI4zC2DlqCzqhVxrSVzq5aOjPvd+Q4L6uFE22lMOpN+CmAq0BrUNmvM0NWOns/KKUJkbtomdv/kuLZ/LV66UXayAUFLSJ3e/ADOQlBKnsvqOU0UrvFmQEJpZhsWaXVu8AaG9AmNMbYc2SlYku9BGziMHvuyQoERWd3A5MDVkivAi1DIbTJSrXWsKXiahHiwFVuQ09LMXeAPRW9TbHEBrSO/MzMvHUhCsNmmu1uSMqEyh7tSc49ZqYupFz1ii4gaB/SE6nOZC5iy58R1A0SNpQHkr17y13qRyJrXCzhqqnGGmkALk52slOmrPKHrZR7NM+UYDM7mTIVwuWMiyVchbAKtJXcVS+52wMItha2UR9+mRHuKD+3ILHKWFzAMB6rPiGsAu0lM5E9ey+TXFvpjxU/E/qm/H7aV+NP4l1B6bhYYo5ghrAKtJk8W+VvvJQZ25WY2LpNC5Rrq7upM4sYnYuV7TUcn7BY4CRT0HKybKWwS1yerYrMwg/TSR1b1gUP8WNzqGseC64EtooHaw/IVwDtJ8dWGltaZtmqUBNM9wU5I9W/fV0nbTw2Psa11XP0NT5hJSDoBBm20pAVZ9MDh2LxwjylK3r7/zrV76k5FPUcmRZkpW4+R+cFoCrQGeSxjYqsckbZC3ZublN5FTQHmHkKU+cvYk7cUoOrO0RVoDd8SW2hIyv6pgcORUdiblO3Nd2mBq2HjZDn3hFQxInTDUFXz5voXUJVoGMkk6oDKMlK3hUtPGyc7AzuHjYRX93dO78CD25WQkxX23gSw3wWf3EPUBXoHIQJMB9qspIGd8XnuOJdrANP97cepTzf3vsl5Mn4/Io48Wn75dXh/HabMukrZgBBJ5lLlr7oyYqUjOlygeY43FCezOJ1NvuaH9jMZq+xyvh2VYg7cbq/+myzv/jXbDabLRZptae7qAC0FUlwpSgrWXB1mdjB050T83DrH4gaxseemLyi/wc6DT+4UZWVMxpN4GIdnS+VEzaeomNQd1udM3+i42gAdIP0gLKNrqxSqY0eLjkq85UZX8VNdeRumxtfLWAq0BPmLF1oy4odXV14CPkuMfsWZPpKdsjz7atUik/3gT4mAJ2EM3iiL6t9BEM/u/jSsto/nq/kLFxTIa8b7i4Kd5vAVGKklHuEVKCHPG+I7bGIrAaD4S21x3Wlyfn55p70hB5eZ/7EAwLD+YxWyHSxnc0RUYH+Mp+9pn/cC8lqcAwuCE31mplEw/ntbLtY+J7SYvE628w1zuYb7pMV/IU8LRbb2Rc0BcCeu/ntLEbpCfLnY15RmEp6PnfzM8Vu6fkShQBQCYPB4D+IYuqJjlOF4wAAAABJRU5ErkJggg==" alt="HTS Advogados" width="150">
+    <div class="kicker">Grupo HTS · Hirtácides Advogados · Themis · CSC</div>
+    <h1 class="logo" aria-label="Trilha Claude"><span>T</span><span>r</span><span>i</span><span>l</span><span>h</span><span>a</span><span class="sp"> </span><span>C</span><span>l</span><span>a</span><span>u</span><span>d</span><span>e</span></h1>
+    <p class="subt">Semana 1 · Qual modelo eu uso?</p>
+    <p class="tag">Todo mundo joga.<br>Escolha seu personagem, cumpra cinco missões e descubra sua patente.<br>Quinze a vinte minutos, em quantas sessões você quiser. O importante é chegar ao fim.</p>
+    <div class="cast" aria-hidden="true"><svg><use href="#pj-1"/></svg><svg><use href="#pj-2"/></svg><svg><use href="#pj-3"/></svg><svg><use href="#pj-4"/></svg><svg><use href="#pj-5"/></svg><svg><use href="#pj-6"/></svg></div>
+    <button class="primary big" id="goStart" type="button"><svg class="ico"><use href="#i-play"/></svg> Começar</button>
+    <div class="press" aria-hidden="true">toque para começar</div>
+  </div>
+</div>
+
+<div class="hud" id="hud"><svg id="hudAv"><use href="#pj-1"/></svg><span>pontos <b id="hudPts">0</b></span><span class="lvl" id="hudLv">Calouro</span><span class="med" id="hudMed"></span></div>
+
+<div class="wrap">
+
+<section id="apresentacao">
+  <div class="eyebrow">Apresentação</div>
+  <h2>Por que uma trilha, e por que um jogo</h2>
+  <p class="lead">A HTS está construindo o seu planejamento estratégico para 2027, e um dos objetivos é aumentar a produtividade com inteligência artificial.<sup>1</sup><br>Na prática, devolver tempo ao que só o advogado faz: ouvir o cliente, decidir a tese, assinar com segurança.</p>
+  <p class="lead">Ferramenta a equipe já tem.<br>O que falta é um jeito comum de usar.</p>
+  <p class="lead strong">Essa trilha existe para conseguirmos adaptar cada vez mais esse jeito em hábito, uma semana de cada vez.</p>
+  <div class="intro-grid">
+    <article class="icard" style="--d:0"><svg class="ico big"><use href="#i-scale"/></svg><h3>O que você ganha</h3>
+      <p>Menos tempo em triagem, resumo e primeira versão.<br>Mais tempo em estratégia, audiência e cliente.</p>
+      <p>Quem já usa skills na equipe relata exatamente isso: a sobrecarga cai.<br>O ganho se sustenta quando é de todos: o que uma pessoa descobre vira padrão da casa.</p></article>
+    <article class="icard" style="--d:1"><svg class="ico big"><use href="#i-doc"/></svg><h3>Por que uma trilha, e não um manual</h3>
+      <p>Advogado lê regra o dia inteiro.<br>Mais uma, guardada numa pasta, não muda a rotina de ninguém.</p>
+      <p>Mudança que pega avança por passos curtos e visíveis, com vitórias que todos veem.<sup>2</sup> E só vale quando vira prática no expediente, não intenção na parede.<sup>3</sup> Por isso cada semana tem um desafio feito no seu próprio serviço e um fechamento no grupo.</p></article>
+    <article class="icard" style="--d:2"><svg class="ico big"><use href="#i-bulb"/></svg><h3>Por que um jogo</h3>
+      <p>Jogo aqui não é brincadeira.<br>É usar a linguagem dos jogos para sustentar uma prática séria.<sup>4</sup></p>
+      <p>Funciona quando atende três coisas que qualquer profissional reconhece: ver o próprio progresso, escolher o caminho e fazer junto com os pares.<sup>5</sup> Pontos e patentes engajam quando estão ligados a algo que importa no trabalho.<sup>6</sup></p></article>
+    <article class="icard" style="--d:3"><svg class="ico big"><use href="#i-clock"/></svg><h3>Hábito, não evento</h3>
+      <p>Hábito nasce de uma ação pequena, repetida, com retorno imediato.<sup>7</sup><br>Dez minutos por semana, um gesto novo no expediente, reconhecimento na sexta.</p>
+      <p>E a dose certa de desafio, nem fácil demais nem impossível, é o que mantém a atenção.<br>No jogo e no trabalho.<sup>8</sup></p></article>
+  </div>
+  <div class="howto">
+    <h3>Como funciona</h3>
+    <ol class="steps-list">
+      <li><b>Todos participam</b>: advocacia, supervisão, financeiro, administrativo, Themis e sócios, cada um com as demandas da sua área.</li>
+      <li><b>Segunda</b>: o tema da semana chega no grupo, com o link da página e o desafio.</li>
+      <li><b>Durante a semana</b>: você joga quando quiser, em qualquer aparelho, e faz o desafio no seu próprio serviço. Abra o link logado na sua conta corporativa do Claude (HTS ou Themis), nunca numa conta pessoal: é isso que registra o seu progresso.</li>
+      <li><b>Sexta</b>: fechamento no grupo com a contagem da equipe e os relatos. Sem ranking de pessoas: o placar é de todos.</li>
+      <li><b>Patentes</b>: Calouro, Ligeiro, Craque e Lenda da Trilha. São suas; você decide se posta.</li>
+      <li><b>Semana 4</b>: a trilha entrega a primeira contagem do indicador de IA do planejamento: skills compartilhadas pela equipe.</li>
+    </ol>
+  </div>
+  <details class="refs"><summary>Referências</summary>
+    <ol>
+      <li>Kaplan, R.; Norton, D. <i>Mapas estratégicos</i>, 2004: o mapa com perspectivas e objetivos usado no planejamento.</li>
+      <li>Kotter, J. <i>Liderando mudanças</i>, 1996: mudança por etapas e vitórias de curto prazo.</li>
+      <li>Bossidy, L.; Charan, R. <i>Execução</i>, 2002: estratégia só vale quando vira prática.</li>
+      <li>Deterding, S.; Dixon, D.; Khaled, R.; Nacke, L. "From game design elements to gamefulness: defining gamification", 2011.</li>
+      <li>Deci, E.; Ryan, R. Teoria da autodeterminação: competência, autonomia e pertencimento, 1985 e 2000.</li>
+      <li>Kapp, K. <i>The Gamification of Learning and Instruction</i>, 2012; Werbach, K.; Hunter, D. <i>For the Win</i>, 2012.</li>
+      <li>Fogg, B. J. <i>Micro-hábitos</i>, 2019; Clear, J. <i>Hábitos atômicos</i>, 2018.</li>
+      <li>Csikszentmihalyi, M. <i>Flow</i>, 1990: o estado de fluxo entre desafio e habilidade.</li>
+    </ol>
+  </details>
+</section>
+
+<section id="personagem">
+  <div class="eyebrow">Antes de entrar</div>
+  <h2>Escolha seu personagem</h2>
+  <p class="sub">Todo mundo joga: advogados, estagiários, financeiro, administrativo, Themis e sócios.<br>O personagem caminha com você pelo mapa, aparece no placar e comemora cada missão.<br>As demandas da sua área valem mais no jogo.</p>
+  <div class="pick" id="pick">
+    <button type="button" class="pc" data-p="1"><svg><use href="#pj-1"/></svg>Toga</button>
+    <button type="button" class="pc" data-p="2"><svg><use href="#pj-2"/></svg>Pasta</button>
+    <button type="button" class="pc" data-p="3"><svg><use href="#pj-3"/></svg>Planilha</button>
+    <button type="button" class="pc" data-p="4"><svg><use href="#pj-4"/></svg>Livros</button>
+    <button type="button" class="pc" data-p="5"><svg><use href="#pj-5"/></svg>Óculos</button>
+    <button type="button" class="pc" data-p="6"><svg><use href="#pj-6"/></svg>Prancheta</button>
+  </div>
+  <div class="form-row"><label for="nome">Como quer ser chamado(a)?</label><input id="nome" type="text" maxlength="24" placeholder="seu nome ou apelido" autocomplete="off"></div>
+  <div class="form-row"><label>Sua área</label>
+    <div class="chips" id="areas">
+      <button type="button" data-a="Advocacia">Advocacia</button><button type="button" data-a="Supervisão">Supervisão</button><button type="button" data-a="Financeiro">Financeiro</button><button type="button" data-a="Administrativo">Administrativo</button><button type="button" data-a="Themis">Themis</button><button type="button" data-a="Sócios">Sócios</button>
+    </div></div>
+  <div class="form-row"><label>Hoje você usa o Claude</label>
+    <div class="chips" id="freq"><button type="button" data-f="todo dia">Todo dia</button><button type="button" data-f="algumas vezes por semana">Algumas vezes por semana</button><button type="button" data-f="raramente">Raramente</button><button type="button" data-f="ainda não">Ainda não</button></div></div>
+  <div class="form-row"><button id="enter" class="primary" type="button">Entrar no escritório</button><span class="note" id="signNote"></span></div>
+</section>
+
+<section id="mapa">
+  <div class="eyebrow">Mapa da semana</div>
+  <h2>Cinco missões, uma patente</h2>
+  <div class="map" id="map">
+    <svg class="road" viewBox="0 0 800 230" aria-hidden="true">
+      <defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#efdbb2"/><stop offset="1" stop-color="#b73a40"/></linearGradient></defs>
+      <path id="roadPath" d="M60 150 C 160 40, 240 40, 300 120 S 420 230, 500 150 S 640 50, 740 110" fill="none" stroke="#3b3e43" stroke-width="14" stroke-linecap="round"/>
+      <path id="roadDone" d="M60 150 C 160 40, 240 40, 300 120 S 420 230, 500 150 S 640 50, 740 110" fill="none" stroke="url(#rg)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 2000"/>
+      <path d="M60 150 C 160 40, 240 40, 300 120 S 420 230, 500 150 S 640 50, 740 110" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-dasharray="4 10"/>
+    </svg>
+    <div class="nodes" id="nodes"></div>
+    <svg class="hero-av" id="heroAv"><use href="#pj-1"/></svg>
+  </div>
+  <div class="team" id="team"><svg class="ico"><use href="#i-flag"/></svg><span id="teamTxt">Equipe na trilha: assim que colegas entrarem, a contagem aparece aqui.</span></div>
+  <div class="map-legend"><span><svg class="ico"><use href="#i-flag"/></svg> missão atual</span><span><svg class="ico"><use href="#i-check"/></svg> concluída</span><span><svg class="ico"><use href="#i-lock"/></svg> abre quando a anterior terminar</span></div>
+  <div class="story"><svg id="storyAv"><use href="#pj-1"/></svg><p id="storyTxt"><b>Primeiro dia.</b> O escritório está cheio de demandas, a assinatura do Claude é de todos, e quatro modelos esperam ordens.<br>Sua missão desta semana: aprender a passar cada tarefa a quem faz melhor.</p></div>
+  <div class="medals" id="medals"></div>
+</section>
+
+<section id="cena" class="locked">
+  <div class="mhead"><div class="mnum" id="mn1">1</div><div><div class="eyebrow">Missão 1</div><h2>Conheça os quatro</h2></div><div class="mreward">+200 pts · medalha</div></div>
+  <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Escolha o personagem e entre no escritório para começar. <button type="button" class="golock" data-go="personagem">Escolher personagem</button></div>
+  <p class="sub">Você pode parar e voltar quando quiser: o progresso fica salvo neste aparelho. Cena de um minuto. Toque num personagem para virar o cartão e ver o que ele faz melhor. Chegue ao fim para concluir a missão.</p>
+  <div class="ctrls">
+    <button id="play" class="primary" type="button">Reproduzir</button>
+    <button id="prev" type="button" aria-label="Quadro anterior">‹</button>
+    <button id="next" type="button" aria-label="Próximo quadro">›</button>
+    <label class="toggle" style="margin-left:auto"><input type="checkbox" id="tts"> Ouvir a narração</label>
+  </div>
+  <div class="stage" id="stage">
+    <div class="meter" id="meter"><svg class="ico"><use href="#i-clock"/></svg><span>Assinatura do grupo</span><div class="track"><div class="fill" id="fill"></div></div><b id="limitTxt">18%</b></div>
+    <div class="row">
+      <div class="tray" id="tray"><svg class="ico"><use href="#i-inbox"/></svg>demandas do dia</div>
+      <div class="models" id="models">
+        <div class="m" data-k="haiku" tabindex="0"><div class="inner">
+          <div class="face front"><span class="flipHint">virar</span><svg class="av"><use href="#av-haiku"/></svg><div class="name">Haiku</div><div class="role">o estagiário rápido</div><div class="w"><i data-w="2"></i></div><div class="wl">peso 1</div></div>
+          <div class="face back"><b>Classifica, extrai, corrige.</b>Triagem de publicações, tirar datas e valores de um contrato, corrigir um e-mail, dúvida pontual.<b>Quase não pesa.</b></div></div></div>
+        <div class="m" data-k="sonnet" tabindex="0"><div class="inner">
+          <div class="face front"><span class="flipHint">virar</span><svg class="av"><use href="#av-sonnet"/></svg><div class="name">Sonnet</div><div class="role">o pleno do dia a dia</div><div class="w"><i data-w="20"></i></div><div class="wl">peso 20</div></div>
+          <div class="face back"><b>Produz o dia a dia.</b>Rascunho de peça simples, e-mail ao cliente, resumo de decisão, proposta pela skill, ata.<b>É o ponto de partida.</b></div></div></div>
+        <div class="m" data-k="opus" tabindex="0"><div class="inner">
+          <div class="face front"><span class="flipHint">virar</span><svg class="av"><use href="#av-opus"/></svg><div class="name">Opus</div><div class="role">o sênior</div><div class="w"><i data-w="40"></i></div><div class="wl">peso 40</div></div>
+          <div class="face back"><b>Cruza documentos.</b>Parecer, contrato com cláusulas interligadas, consolidar gravação longa, planilha com várias fontes.<b>Para a tarefa pesada.</b></div></div></div>
+        <div class="m" data-k="fable" tabindex="0"><div class="inner">
+          <div class="face front"><span class="flipHint">virar</span><svg class="av"><use href="#av-fable"/></svg><div class="name">Fable</div><div class="role">o estrategista</div><div class="w"><i data-w="100"></i></div><div class="wl">peso 100</div></div>
+          <div class="face back"><b>O problema difícil.</b>Estratégia, cenário, trabalho longo que roda sozinho, e quando o Opus não deu conta.<b>Raro e combinado.</b></div></div></div>
+      </div>
+    </div>
+    <div class="chip" id="chip"><svg class="ico"><use href="#i-doc"/></svg><span></span></div>
+    <div class="warnbadge" id="warnbadge"><svg class="ico"><use href="#i-scale"/></svg>Evite: modelo pesado para tarefa leve</div>
+  </div>
+  <div class="caption" id="caption" aria-live="polite"></div>
+  <div class="beatnav"><span id="beatN">1 / 9</span><div class="dots" id="dots"></div><span>peso aproximado, pelos preços por uso de cada modelo</span></div>
+</section>
+
+<section id="quiz" class="locked">
+  <div class="mhead"><div class="mnum" id="mn2">2</div><div><div class="eyebrow">Missão 2</div><h2>Quiz relâmpago</h2></div><div class="mreward">até 1.800 pts · medalha</div></div>
+  <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 1 para liberar.</div>
+  <p class="sub">Seis situações, vinte segundos cada. Quanto mais rápido acertar, mais pontos. Acertos seguidos dão bônus.</p>
+  <div class="qwrap" id="qwrap">
+    <div class="qstart" id="qstart"><p>Leia a situação e toque no modelo certo antes do tempo acabar. O relógio começa quando você tocar em iniciar.</p><button class="primary" id="qgo" type="button"><svg class="ico"><use href="#i-bolt"/></svg> Iniciar o quiz</button></div>
+    <div id="qlive" hidden>
+      <div class="qtop"><span id="qn">1 / 6</span><div class="qtimer"><i id="qbar"></i></div><span class="qsec" id="qsec">20</span><span id="qstreak"></span></div>
+      <div class="qstem" id="qstem"></div>
+      <div class="qgrid" id="qgrid"></div>
+    </div>
+    <div class="qend" id="qend" hidden></div>
+  </div>
+</section>
+
+<section id="seletor" class="locked">
+  <div class="mhead"><div class="mnum" id="mn3">3</div><div><div class="eyebrow">Missão 3</div><h2>Descreva uma tarefa sua</h2></div><div class="mreward">+150 pts</div></div>
+  <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 2 para liberar.</div>
+  <p class="sub">Com suas palavras, uma tarefa real da sua semana. A sugestão segue a regra: comece pelo mais leve e suba se precisar.</p>
+  <textarea id="tarefa" placeholder="Ex.: preciso resumir uma decisão de 12 páginas para mandar ao cliente"></textarea>
+  <div class="chips sel" id="chips">
+    <button type="button"><svg class="ico"><use href="#i-spell"/></svg>Corrigir a ortografia de um e-mail</button>
+    <button type="button"><svg class="ico"><use href="#i-calc"/></svg>Extrair valores e datas de um contrato</button>
+    <button type="button"><svg class="ico"><use href="#i-hand"/></svg>Proposta pela skill da equipe</button>
+    <button type="button"><svg class="ico"><use href="#i-scale"/></svg>Parecer cruzando três contratos e a lei</button>
+    <button type="button"><svg class="ico"><use href="#i-mic"/></svg>Consolidar uma gravação de duas horas</button>
+    <button type="button"><svg class="ico"><use href="#i-chart"/></svg>Estratégia de um caso com 60 documentos</button>
+  </div>
+  <button id="sugerir" class="primary" type="button">Sugerir modelo</button>
+  <div class="result" id="result" hidden>
+    <svg class="av" id="resAv"><use href="#av-sonnet"/></svg>
+    <div><div class="pickn" id="pickn"></div><p id="why"></p><p><small id="up"></small></p><div class="ladder" id="ladder"><i></i><i></i><i></i><i></i></div></div>
+  </div>
+</section>
+
+<section id="jogo" class="locked">
+  <div class="mhead"><div class="mnum" id="mn4">4</div><div><div class="eyebrow">Missão 4</div><h2>Um dia de trabalho</h2></div><div class="mreward">meta 2.000 pts · medalhas</div></div>
+  <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 3 para liberar.</div>
+  <p class="sub">Três fases: manhã, tarde e plantão (é só a história do jogo; jogue na hora que quiser). Arraste cada demanda para o modelo certo. Acertos em sequência multiplicam; demandas da sua área e as de todos valem mais; as urgentes valem o dobro se forem a tempo. Demandas de outras áreas sempre entram: é assim que se aprende o que o colega faz.</p>
+  <div class="roundbtn" id="startWrap"><button id="startDay" class="primary" type="button"><svg class="ico"><use href="#i-play"/></svg> Começar o dia</button></div>
+  <div id="gameBody" hidden>
+    <div class="gamehead">
+      <div class="rank"><svg id="rankAv"><use href="#pj-1"/></svg><div><div class="lv" id="lv">Calouro</div><div class="xp" id="xp"></div><div class="xpbar"><i id="xpbar"></i></div></div></div>
+      <div class="pts"><div class="n" id="pts">0</div><div class="combo">combo <b id="combo">×1</b> · meta do dia <b id="goal">2.000</b> · melhor <b id="best">0</b></div></div>
+    </div>
+    <div class="day" id="day"><span class="pill on" id="roundPill">Manhã · fase 1 de 3</span><span>Assinatura da fase</span><div class="track"><i id="dayfill"></i></div><b id="daypct">0%</b><span class="pill" id="hourPill"><svg class="ico"><use href="#i-clock"/></svg>08h00</span><span class="pill" id="playerPill"></span></div>
+    <div class="board" id="board">
+      <div class="slot" data-k="haiku"><svg class="av"><use href="#av-haiku"/></svg><div class="name">Haiku</div><div class="cnt">0 cartões</div></div>
+      <div class="slot" data-k="sonnet"><svg class="av"><use href="#av-sonnet"/></svg><div class="name">Sonnet</div><div class="cnt">0 cartões</div></div>
+      <div class="slot" data-k="opus"><svg class="av"><use href="#av-opus"/></svg><div class="name">Opus</div><div class="cnt">0 cartões</div></div>
+      <div class="slot" data-k="fable"><svg class="av"><use href="#av-fable"/></svg><div class="name">Fable</div><div class="cnt">0 cartões</div></div>
+    </div>
+    <div class="tools">
+      <button id="pu" type="button" class="putool"><svg class="ico"><use href="#i-hand"/></svg>Perguntar à supervisão <b id="puN">2</b></button>
+      <span class="legend"><i class="dot urg"></i> urgente, dobro a tempo · <i class="dot mine"></i> da sua área ou de todos, vale mais · o baralho muda a cada dia jogado</span>
+    </div>
+    <div class="deck" id="deck"></div>
+    <div class="hudrow"><span>Acertos <b id="hits">0</b> / <b id="total">27</b></span><span>Restam na fase <b id="left">9</b></span><span>Sem desperdício <b id="clean">0</b></span><label class="toggle" style="margin-left:auto"><input type="checkbox" id="sfx" checked> Sons</label><label class="toggle"><input type="checkbox" id="music"> Música</label></div>
+    <div class="fb" id="fb"></div>
+    <div class="stars-row" id="roundStars"></div>
+    <div class="roundbtn"><button id="nextRound" class="primary" type="button" hidden>Começar a tarde</button></div>
+    <div class="score" id="score" hidden></div>
+  </div>
+</section>
+
+<section id="desafio" class="locked">
+  <div class="mhead"><div class="mnum" id="mn5">5</div><div><div class="eyebrow">Missão 5</div><h2>Desafio da semana</h2></div><div class="mreward">+300 pts · medalha</div></div>
+  <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 4 para liberar.</div>
+  <p class="sub">A trilha só vale se mudar o seu expediente.<br>O desafio é curto e feito no seu próprio serviço.</p>
+  <div class="mission">
+    <div class="orb"><svg class="ico"><use href="#i-hand"/></svg></div>
+    <div>
+      <b>Uma semana escolhendo o modelo antes de pedir.</b>
+      <ol>
+        <li>Em cada chat novo desta semana, antes de escrever, pergunte: isto é tarefa de estagiário, pleno, sênior ou estrategista?</li>
+        <li>Resolva ao menos uma tarefa do seu dia no Haiku ou no Sonnet que você normalmente faria num modelo maior.</li>
+        <li>Conte no grupo, em uma linha, qual foi a tarefa e quanto tempo levou.</li>
+      </ol>
+      <label class="chk" id="chkLab"><input type="checkbox" id="chk"> Fiz o desafio desta semana</label>
+      <div class="roundbtn"><button id="shareMission" type="button">Copiar a linha para o grupo</button><button id="shareAll" type="button">Copiar meu resultado da semana</button></div>
+      <p class="note" id="saveNote"></p>
+    </div>
+  </div>
+</section>
+
+
+
+<footer>
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKwAAAEyCAMAAADgLbjvAAAAY1BMVEVMaXH////v27Lv27Lv27Lv27L////////////////v27L////v27L////////v27L////v27Lv27L////////v27L////v27L////v27L////v27Lv27L////v27L////v27LQdofHAAAAH3RSTlMAEEDwwIDwgEDAEGBgMKAg0KDg4CDQsDBwUJCwkFBwnLwuswAAAAlwSFlzAAAsSgAALEoBd3p0TQAAIABJREFUeJztnel6Kq0SRtU4x8RkZzJmMPd/lftRY4RmqioKpbvf9eucb5um6ZZlAQUMNBmqXq12vnpVWwC6xO2iT69ztqvgJgAAAja7HslqeL+DrABoJ/e7Hslq+LCDrABoJcPFrkeyunvaQVYAtJJDpNEbWX1Nd5AVAK3k7th6eyKrzW4HWQHQSn4jjZ7I6n4HWQHQTm5PrbcPsjoMzkFWALSR7a5Hsrp72EFWALST+12PZDWf7iArAFrJ0Ig0ui+r290OsgKglZi9ou7LaruDrABoJ3fTXX9kNXzdQVYAtJNb21XdltXzww6yAqCdbJqtt8uyagSRkBUA7eHeab0dllUziISsAGgLzghOp2U1cysLWQHQCobOCE6HZTV0g0jICoB24BnB6a6svGKGrABoA3Ovqzoqq+PmVZAVAC3kNtB6OymrL7+YISsA6mcbar1dlJWTnwFZAdAW/KPNHZVVuLKQFQB1Expt7qSsjM2rICsA2sVdxFWdk1W0spAVADXjT1noqKwCc56QFQD141t00llZheY8ISsAqicyM9Y9WQXnPCErAGonNjPWNVn5lj5CVgC0AkLz7Y6s3M2rICsAWkIsZaFzsorPI0BWAFQMqfl2RVaJeQTICoB6Sc3id0pW3s2rICsA2kByFr9DsgpsXgVZAdAC0rP43ZEVZWwOsgKgTsihRgdkFdy8CrICoHYYoUb7ZRXevAqyAqByEot5uyWrVIo+ZAVAtdAyjjoiK3J/F7ICoDaIGUedkFV88yrICoCaIaYsdEJWnP4uZAVAXTC7Ra2WFS3tFbICoEIoGw90RlbMGBKyAqAeGCkL7ZcVNe0VsgKgOjjZkW2XFT+GhKwAqAXBEE5rZUXavAqyAqBKJEM4bZUVK5UMsgKgKqibpHRBVrxUMsgKgJrgpiy0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" alt="HTS Advogados" width="110" style="height:auto"><span>Trilha Claude · semana 1 de 4</span>
+  <button id="duvida" type="button">Tenho uma dúvida</button>
+  <button id="reset" type="button">Recomeçar a semana</button>
+  <span class="fnote">Os nomes e versões dos modelos mudam; esta página é atualizada quando isso acontecer. Nenhum dado real de cliente aparece aqui.</span>
+</footer>
+</div>
+<canvas id="conf" hidden></canvas>
+<div class="flash" id="flash"></div>
+<div class="combo-big" id="comboBig"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},del:function(k){try{localStorage.removeItem(k)}catch(e){}}};
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var names=['haiku','sonnet','opus','fable'], label={haiku:'Haiku',sonnet:'Sonnet',opus:'Opus',fable:'Fable'}, weight={haiku:1,sonnet:20,opus:40,fable:100};
+  function fmt(n){ return (n||0).toLocaleString('pt-BR'); }
+  function toast(t){var el=$('toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on')},2400)}
+  function flash(kind){ if(reduce) return; var f=$('flash'); f.className='flash'; void f.offsetWidth; f.classList.add(kind); }
+  function shakeBody(){ if(reduce) return; document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake'); setTimeout(function(){document.body.classList.remove('shake')},450); }
+  function banner(t,s){ var d=document.createElement('div'); d.className='banner'; d.innerHTML=(s?'<small>'+s+'</small>':'')+t; document.body.appendChild(d); setTimeout(function(){d.remove()},1800); }
+  function floatPts(x,y,txt,neg){ var f=document.createElement('div'); f.className='float'+(neg?' neg':''); f.textContent=txt; f.style.left=x+'px'; f.style.top=y+'px'; document.body.appendChild(f); setTimeout(function(){f.remove()},1000); }
+  function sparks(x,y){ if(reduce) return; var cols=['#b73a40','#efdbb2','#d0d3d4','#5fb27a']; for(var i=0;i<14;i++){ var s=document.createElement('i'); s.className='spark'; s.style.left=x+'px'; s.style.top=y+'px'; s.style.background=cols[i%4]; var a=Math.random()*6.28, d=40+Math.random()*70; s.style.setProperty('--sx',Math.cos(a)*d+'px'); s.style.setProperty('--sy',Math.sin(a)*d+'px'); document.body.appendChild(s); setTimeout(function(el){return function(){el.remove()}}(s),800); } }
+  function comboBig(c){ var el=$('comboBig'); if(c>=3){ el.innerHTML='<small>combo</small>×'+c; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(function(){el.classList.remove('on')},1400); } else el.classList.remove('on'); }
+  function confetti(n,dur){ if(reduce) return; n=n||140; dur=dur||3200; var cv=$('conf'), ctx=cv.getContext('2d'); cv.hidden=false; cv.width=innerWidth; cv.height=innerHeight;
+    var cols=['#b73a40','#efdbb2','#d0d3d4','#63666a'], ps=[]; for(var i=0;i<n;i++) ps.push({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,r:4+Math.random()*5,c:cols[i%4],v:2+Math.random()*3,a:Math.random()*6,s:Math.random()*.2-.1});
+    var t0=Date.now(); (function f(){ ctx.clearRect(0,0,cv.width,cv.height); ps.forEach(function(p){ p.y+=p.v; p.a+=p.s; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); ctx.restore(); }); if(Date.now()-t0<dur) requestAnimationFrame(f); else { ctx.clearRect(0,0,cv.width,cv.height); cv.hidden=true; } })(); }
+  (function(){ var secs=document.querySelectorAll('section'); if(reduce||!('IntersectionObserver' in window)) return; var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{rootMargin:'0px 0px -8% 0px'}); for(var i=0;i<secs.length;i++){ secs[i].classList.add('reveal'); io.observe(secs[i]); } })();
+
+  /* ---------- sons e música ---------- */
+  var AC=null; function sfx(kind){ var s=$('sfx'); if(s&&!s.checked) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); var t=AC.currentTime;
+    var seq={ok:[[660,0,.08],[880,.09,.12]],bad:[[220,0,.18]],big:[[523,0,.1],[659,.1,.1],[784,.2,.1],[1046,.3,.25]],tick:[[440,0,.04]],step:[[330,0,.05],[392,.08,.05]]}[kind];
+    seq.forEach(function(x){ var o=AC.createOscillator(), g=AC.createGain(); o.type=kind==='bad'?'sawtooth':'sine'; o.frequency.value=x[0]; g.gain.setValueAtTime(.0001,t+x[1]); g.gain.exponentialRampToValueAtTime(.15,t+x[1]+.01); g.gain.exponentialRampToValueAtTime(.0001,t+x[1]+x[2]); o.connect(g); g.connect(AC.destination); o.start(t+x[1]); o.stop(t+x[1]+x[2]+.02); }); }catch(e){} }
+  var mus={on:false,t:null,step:0}, SEQ=[220,277,330,440,330,277,247,196,220,277,330,440,494,440,330,277];
+  function musicTick(){ if(!mus.on) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); var t=AC.currentTime, f=SEQ[mus.step%SEQ.length];
+      var o=AC.createOscillator(), g=AC.createGain(), lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=900; o.type='triangle'; o.frequency.value=f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.06,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.22); o.connect(lp); lp.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.25);
+      if(mus.step%4===0){ var b2=AC.createOscillator(), bg=AC.createGain(); b2.type='sine'; b2.frequency.value=f/4; bg.gain.setValueAtTime(.0001,t); bg.gain.exponentialRampToValueAtTime(.09,t+.02); bg.gain.exponentialRampToValueAtTime(.0001,t+.4); b2.connect(bg); bg.connect(AC.destination); b2.start(t); b2.stop(t+.42); } }catch(e){} mus.step++; mus.t=setTimeout(musicTick,250); }
+  $('music').addEventListener('change',function(){ mus.on=this.checked; clearTimeout(mus.t); if(mus.on) musicTick(); });
+  $('sfx').checked=store.get('hts-sfx')!=='0'; $('sfx').addEventListener('change',function(){ store.set('hts-sfx',this.checked?'1':'0'); });
+
+  /* ---------- narração ---------- */
+  var ttsOn=store.get('hts-tts')==='1'; $('tts').checked=ttsOn; var voice=null;
+  function pickVoice(){ if(!('speechSynthesis' in window)) return; var vs=speechSynthesis.getVoices(); voice=null; for(var i=0;i<vs.length;i++){ if(/pt[-_]BR/i.test(vs[i].lang)){voice=vs[i];break} } if(!voice) for(var j=0;j<vs.length;j++){ if(/^pt/i.test(vs[j].lang)){voice=vs[j];break} } }
+  if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+  function speak(t){ if(!ttsOn||!('speechSynthesis' in window)) return; speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,'')); u.lang='pt-BR'; if(voice) u.voice=voice; speechSynthesis.speak(u); }
+  function hush(){ if('speechSynthesis' in window) speechSynthesis.cancel(); }
+  $('tts').addEventListener('change',function(){ ttsOn=this.checked; store.set('hts-tts',ttsOn?'1':'0'); if(ttsOn){ if(!('speechSynthesis' in window)){toast('Este navegador não lê em voz alta.');this.checked=false;ttsOn=false;return} speak(beats[b].t) } else hush(); });
+
+  /* ---------- estado da semana (progresso, pontos, medalhas) ---------- */
+  var W='hts-s1-';
+  var G={freq:store.get(W+'freq')||'', pts:+(store.get(W+'pts')||0), done:JSON.parse(store.get(W+'done')||'{}'), med:JSON.parse(store.get(W+'med')||'{}'), pj:store.get(W+'pj')||'', nome:store.get(W+'nome')||'', area:store.get(W+'area')||'', entered:store.get(W+'in')==='1'};
+  function saveG(){ store.set(W+'pts',String(G.pts)); store.set(W+'done',JSON.stringify(G.done)); store.set(W+'med',JSON.stringify(G.med)); }
+  var LV=[{n:'Calouro',at:0},{n:'Ligeiro',at:1200},{n:'Craque',at:2600},{n:'Lenda da Trilha',at:4200}];
+  function lvl(){ var L=LV[0]; LV.forEach(function(l){ if(G.pts>=l.at) L=l; }); return L; }
+  var MEDALS=[
+    {id:'curioso',n:'Curioso',d:'Viu a cena até o fim',i:'i-play'},
+    {id:'reflexo',n:'Reflexo',d:'4 ou mais no quiz',i:'i-bolt'},
+    {id:'certeiro',n:'Certeiro',d:'6 de 6 no quiz',i:'i-star'},
+    {id:'tradutor',n:'Tradutor',d:'Descreveu uma tarefa sua',i:'i-spell'},
+    {id:'combo5',n:'Combo ×5',d:'Cinco acertos seguidos',i:'i-bulb'},
+    {id:'clean',n:'Sem desperdício',d:'Uma fase sem modelo pesado à toa',i:'i-check'},
+    {id:'urgent',n:'Urgência atendida',d:'Duas urgentes a tempo',i:'i-clock'},
+    {id:'econ',n:'Economista',d:'Consumo perto do ideal no dia',i:'i-calc'},
+    {id:'day',n:'Dia completo',d:'Todas as demandas certas',i:'i-folder'},
+    {id:'desafiante',n:'Desafiante',d:'Fez o desafio da semana',i:'i-hand'}
+  ];
+  function drawMedals(){ var m=$('medals'); m.innerHTML=''; MEDALS.forEach(function(x){ var d=document.createElement('div'); d.className='medal'+(G.med[x.id]?' won':''); d.innerHTML='<div class="ring"><svg class="ico"><use href="#'+x.i+'"/></svg></div><b>'+x.n+'</b><br>'+x.d; m.appendChild(d); });
+    var hm=$('hudMed'); hm.innerHTML=MEDALS.map(function(x){return '<i class="'+(G.med[x.id]?'on':'')+'"></i>'}).join(''); }
+  function award(id){ if(G.med[id]) return; G.med[id]=true; saveG(); drawMedals(); var x=MEDALS.filter(function(m){return m.id===id})[0]; sfx('big'); toast('Medalha: '+x.n); confetti(50,1200); }
+  function addPts(n,x,y){ if(!n) return; var prev=lvl(); G.pts=Math.max(0,G.pts+n); saveG(); if(x!=null) floatPts(x,y,(n>0?'+':'−')+fmt(Math.abs(n)),n<0); renderHud(); var L=lvl(); if(L!==prev&&n>0){ var box=document.createElement('div'); box.className='lvup'; box.innerHTML='<svg><use href="#pj-'+(G.pj||1)+'"/></svg><div class="t">'+(G.nome?G.nome+', agora':'Agora')+' você é '+L.n+'</div><p>'+fmt(G.pts)+' pontos</p>'; document.body.appendChild(box); sfx('big'); confetti(80,1600); speak('Agora você é '+L.n); setTimeout(function(){box.remove()},1900); } }
+  function renderHud(){ $('hudPts').textContent=fmt(G.pts); $('hudLv').textContent=lvl().n; $('hudAv').querySelector('use').setAttribute('href','#pj-'+(G.pj||1)); $('pts').textContent=fmt(G.pts); var L=lvl(), ni=LV.indexOf(L)+1, nx=LV[ni]; $('lv').textContent=L.n; $('xp').textContent=nx?(fmt(G.pts)+' / '+fmt(nx.at)+' para '+nx.n):'patente máxima'; $('xpbar').style.width=(nx?Math.min(100,100*(G.pts-L.at)/(nx.at-L.at)):100)+'%'; }
+  $('hud').classList.toggle('on',G.entered);
+  function gate(id){ var sec=$(id); if(!sec.classList.contains('locked')) return true; if(!G.entered){ toast('Primeiro escolha o personagem e entre no escritório.'); $('personagem').scrollIntoView({behavior:'smooth',block:'start'}); } else toast('Termine a missão anterior para liberar esta.'); sfx('tick'); return false; }
+  Array.prototype.forEach.call(document.querySelectorAll('.golock'),function(bt){ bt.addEventListener('click',function(){ $(this.getAttribute('data-go')).scrollIntoView({behavior:'smooth',block:'start'}); }); });
+
+  /* ---------- missões e mapa ---------- */
+  var MIS=[{id:'cena',n:'Conheça os quatro',i:'i-play'},{id:'quiz',n:'Quiz relâmpago',i:'i-bolt'},{id:'seletor',n:'Sua tarefa',i:'i-spell'},{id:'jogo',n:'Dia de trabalho',i:'i-folder'},{id:'desafio',n:'Desafio da semana',i:'i-hand'}];
+  var road=$('roadPath'), L_=road.getTotalLength(), pos=[0.02,0.26,0.5,0.74,0.98];
+  function pt(f){ var p=road.getPointAtLength(f*L_); return {x:p.x/800*100,y:p.y/230*100}; }
+  function curMission(){ for(var i=0;i<MIS.length;i++){ if(!G.done[MIS[i].id]) return i; } return MIS.length; }
+  function drawMap(){ var nd=$('nodes'); nd.innerHTML=''; var cur=curMission();
+    MIS.forEach(function(m,i){ var p=pt(pos[i]); var st=G.done[m.id]?'done':(i===cur&&G.entered?'cur':'lock'); var bt=document.createElement('button'); bt.type='button'; bt.className='node '+st; bt.style.left=p.x+'%'; bt.style.top=p.y+'%'; bt.setAttribute('aria-label','Missão '+(i+1)+': '+m.n);
+      bt.innerHTML='<svg class="ico"><use href="#'+(st==='done'?'i-check':(st==='lock'?'i-lock':m.i))+'"/></svg>'; bt.addEventListener('click',function(){ sfx('tick'); $(m.id).scrollIntoView({behavior:'smooth',block:'start'}); }); nd.appendChild(bt);
+      var l=document.createElement('div'); l.className='nlabel'; l.style.left=p.x+'%'; l.style.top='calc('+p.y+'% + 34px)'; l.innerHTML='<b>'+(i+1)+'</b>'+m.n; nd.appendChild(l); });
+    var f=cur>=MIS.length?pos[4]:pos[cur]; $('roadDone').setAttribute('stroke-dasharray',(f*L_)+' 2000');
+    MIS.forEach(function(m,i){ var sec=$(m.id); var open=G.entered&&(i<=cur); sec.classList.toggle('locked',!open); var mn=$('mn'+(i+1)); mn.classList.toggle('done',!!G.done[m.id]); mn.innerHTML=G.done[m.id]?'<svg class="ico"><use href="#i-check"/></svg>':String(i+1); });
+    var av=$('heroAv'); av.querySelector('use').setAttribute('href','#pj-'+(G.pj||1)); $('storyAv').querySelector('use').setAttribute('href','#pj-'+(G.pj||1));
+    if(!av._placed){ var ff=cur>=MIS.length?pos[4]:pos[Math.min(cur,4)]; var q=pt(ff); av.style.left=q.x+'%'; av.style.top=q.y+'%'; av._f=ff; av._placed=true; }
+    drawMedals(); }
+  function walkTo(f){ var av=$('heroAv'), from=av._f||pos[0], t0=null, dur=reduce?1:1500; av.classList.add('walk'); sfx('step');
+    (function step(ts){ if(!t0) t0=ts; var k=Math.min(1,(ts-t0)/dur); var e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; var q=pt(from+(f-from)*e); av.style.left=q.x+'%'; av.style.top=q.y+'%'; if(k<1) requestAnimationFrame(step); else { av._f=f; av.classList.remove('walk'); av.classList.add('cheer'); setTimeout(function(){av.classList.remove('cheer')},1300); } })(performance.now()); }
+  var STORY={0:'<b>Primeiro dia.</b> O escritório está cheio de demandas, a assinatura do Claude é de todos, e quatro modelos esperam ordens.<br>Sua missão desta semana: aprender a passar cada tarefa a quem faz melhor.',1:'<b>Missão 1 cumprida.</b> Agora você sabe quem é quem.<br>Próxima parada: o quiz relâmpago, para ver se a escolha já saiu automática.',2:'<b>Reflexo testado.</b><br>Antes de entrar no dia cheio, descreva uma tarefa sua de verdade e veja o modelo que ela pede.',3:'<b>Tarefa traduzida.</b> O escritório abriu as portas.<br>Um dia inteiro de demandas espera por você, em três fases.',4:'<b>Dia vencido.</b> Falta o que importa: levar isso para a sua semana real.<br>O desafio fecha a missão e registra sua conclusão.',5:'<b>Semana 1 concluída.</b> Sua patente está no placar.<br>Segunda-feira chega a semana 2 no grupo.'};
+  function completeMission(id,points){ if(G.done[id]) return; G.done[id]=true; saveG(); var i=MIS.map(function(m){return m.id}).indexOf(id); banner('Missão '+(i+1)+' concluída', MIS[i].n); sfx('big'); confetti(90,1800);
+    if(points) addPts(points); drawMap(); var nxt=Math.min(i+1,4); walkTo(pos[nxt]); $('storyTxt').innerHTML=STORY[i+1]; if(i<4){ setTimeout(function(){ toast('Missão '+(i+2)+' liberada: '+MIS[i+1].n); },1700); } saveResult(); savePresence(); }
+
+  /* ---------- tela de título e personagem ---------- */
+  (function(){ var Ls=document.querySelectorAll('.logo span'); for(var i=0;i<Ls.length;i++) Ls[i].style.setProperty('--i',i);
+    var cv=$('bgfx'); if(!cv||reduce) return; var ctx=cv.getContext('2d'), ps=[], Wd,Hd; function size(){ Wd=cv.width=cv.offsetWidth; Hd=cv.height=cv.offsetHeight; } size(); window.addEventListener('resize',size);
+    for(var j=0;j<42;j++) ps.push({x:Math.random(),y:Math.random(),s:6+Math.random()*16,v:.0004+Math.random()*.0012,r:Math.random()*Math.PI,o:.08+Math.random()*.25,c:j%3?'#efdbb2':'#d0d3d4'});
+    (function f(){ ctx.clearRect(0,0,Wd,Hd); ps.forEach(function(q){ q.y-=q.v; q.r+=.004; if(q.y<-0.05){q.y=1.05;q.x=Math.random()} ctx.save(); ctx.translate(q.x*Wd,q.y*Hd); ctx.rotate(q.r); ctx.globalAlpha=q.o; ctx.fillStyle=q.c; ctx.fillRect(-q.s/2,-q.s/2,q.s,q.s); ctx.restore(); }); requestAnimationFrame(f); })(); })();
+  $('goStart').addEventListener('click',function(){ sfx('big'); $(G.entered?'mapa':'apresentacao').scrollIntoView({behavior:'smooth',block:'start'}); });
+  $('nome').value=G.nome;
+  Array.prototype.forEach.call($('areas').children,function(bt){ bt.classList.toggle('on',bt.getAttribute('data-a')===G.area); bt.addEventListener('click',function(){ G.area=this.getAttribute('data-a'); store.set(W+'area',G.area); Array.prototype.forEach.call($('areas').children,function(x){x.classList.toggle('on',x===bt)}); sfx('tick'); }); });
+  Array.prototype.forEach.call($('freq').children,function(bt){ bt.classList.toggle('on',bt.getAttribute('data-f')===G.freq); bt.addEventListener('click',function(){ G.freq=this.getAttribute('data-f'); store.set(W+'freq',G.freq); Array.prototype.forEach.call($('freq').children,function(x){x.classList.toggle('on',x===bt)}); sfx('tick'); }); });
+  Array.prototype.forEach.call($('pick').children,function(bt){ bt.classList.toggle('on',bt.getAttribute('data-p')===G.pj); bt.addEventListener('click',function(){ G.pj=this.getAttribute('data-p'); store.set(W+'pj',G.pj); Array.prototype.forEach.call($('pick').children,function(x){x.classList.toggle('on',x===bt)}); sfx('step'); renderHud(); drawMap(); }); });
+  $('enter').addEventListener('click',function(){ if(!G.pj){toast('Escolha um personagem.');return} if(!G.area){toast('Escolha a sua área.');return} G.nome=$('nome').value.trim(); store.set(W+'nome',G.nome); G.entered=true; store.set(W+'in','1');
+    $('hud').classList.add('on'); drawMap(); savePresence(); banner('Bem-vindo'+(G.nome?', '+G.nome:''),'semana 1 · qual modelo eu uso'); sfx('big'); confetti(60,1400); speak('Bem-vindo'+(G.nome?', '+G.nome:'')+'. Primeira missão: conheça os quatro.'); setTimeout(function(){ $('mapa').scrollIntoView({behavior:'smooth',block:'start'}); },600); });
+
+  /* ---------- missão 1: cena ---------- */
+  var beats=[
+    {t:'O Claude não é um só: são <b>quatro modelos</b>, com perfis diferentes.<br>Escolher o modelo é como escolher a quem passar uma demanda no escritório.', fill:18, lit:[], dim:[]},
+    {t:'Pense neles como quatro pessoas da equipe. Quanto mais sênior, mais fundo ele vai, e mais ele consome da assinatura que todos dividem.', fill:18, lit:names, dim:[]},
+    {t:'Primeira demanda do dia: separar as publicações por tipo. <b>Haiku</b>, o estagiário rápido, resolve em segundos e quase não consome.', fill:19, lit:['haiku'], dim:['sonnet','opus','fable'], task:'Separar as publicações do dia', icon:'i-mail', to:'haiku'},
+    {t:'Um resumo de decisão em linguagem simples para o cliente. <b>Sonnet</b>, o pleno do dia a dia, é o ponto de partida para produzir texto.', fill:24, lit:['sonnet'], dim:['haiku','opus','fable'], task:'Resumo de decisão para o cliente', icon:'i-doc', to:'sonnet'},
+    {t:'Um parecer que cruza três contratos com a lei. Aqui entra <b>Opus</b>, o sênior, que lê vários documentos de uma vez e liga as pontas.', fill:36, lit:['opus'], dim:['haiku','sonnet','fable'], task:'Parecer com três contratos e a lei', icon:'i-scale', to:'opus'},
+    {t:'A estratégia de um caso complexo, com dezenas de documentos e várias rodadas. <b>Fable</b>, o estrategista: o mais fundo, e o que mais consome.', fill:60, lit:['fable'], dim:['haiku','sonnet','opus'], task:'Estratégia de um caso com 60 documentos', icon:'i-chart', to:'fable', hot:true},
+    {t:'<b>Atenção:</b> isto não é o caminho. Uma tarefa leve foi para o modelo mais pesado. O resultado é o mesmo, com <b>cem vezes o consumo</b>. Se virar hábito, a assinatura aperta para todos antes do fim do dia.', fill:86, lit:['fable'], dim:['haiku','sonnet','opus'], task:'Separar as publicações do dia', icon:'i-mail', to:'fable', hot:true, warn:true},
+    {t:'A regra simples: <b>comece pelo mais leve</b>.<br>Se a resposta não servir, suba um degrau. Quase nunca é preciso começar pelo topo.', fill:30, lit:['haiku','sonnet'], dim:['fable']},
+    {t:'Em qualquer modelo, o que sai é rascunho até você conferir.<br>Missão cumprida: siga para o quiz relâmpago.', fill:30, lit:[], dim:[]}
+  ];
+  var b=0, timer=null, playing=false, STEP=8500; var dots=$('dots'); beats.forEach(function(){dots.appendChild(document.createElement('i'))});
+  var mEls={}; Array.prototype.forEach.call(document.querySelectorAll('#models .m'),function(el){ mEls[el.getAttribute('data-k')]=el; el.addEventListener('click',function(){el.classList.toggle('flip'); sfx('tick');}); el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();el.classList.toggle('flip')}}); });
+  function flyTo(k,text,icon){ var chip=$('chip'), stage=$('stage'), tray=$('tray'), tgt=mEls[k]; chip.querySelector('span').textContent=text; chip.querySelector('use').setAttribute('href','#'+icon);
+    var s=stage.getBoundingClientRect(), a=tray.getBoundingClientRect(), z=tgt.getBoundingClientRect(); chip.style.transition='none'; chip.classList.remove('show'); var cw=chip.offsetWidth, ch=chip.offsetHeight;
+    var x0=a.left-s.left+a.width/2-cw/2, y0=a.top-s.top+a.height/2-ch/2, x1=z.left-s.left+z.width/2-cw/2, y1=z.top-s.top+28; x0=Math.max(4,Math.min(x0,s.width-cw-4)); x1=Math.max(4,Math.min(x1,s.width-cw-4));
+    chip.style.transform='translate('+x0+'px,'+y0+'px)'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ chip.style.transition=''; chip.classList.add('show'); chip.style.transform='translate('+x1+'px,'+y1+'px)'; setTimeout(function(){ tgt.classList.add('hit'); sfx('tick'); setTimeout(function(){tgt.classList.remove('hit')},600); }, reduce?0:1000); }); }); }
+  function render(){ var k=beats[b]; $('caption').innerHTML=(k.warn?'<svg class="ico"><use href="#i-scale"/></svg>':'')+k.t; $('caption').classList.toggle('warn',!!k.warn); $('stage').classList.toggle('warn',!!k.warn); $('chip').classList.toggle('bad',!!k.warn); if(k.warn){ sfx('bad'); shakeBody(); }
+    $('beatN').textContent=(b+1)+' / '+beats.length; $('fill').style.width=k.fill+'%'; $('limitTxt').textContent=k.fill+'%'; $('meter').classList.toggle('hot',!!k.hot);
+    names.forEach(function(n){ mEls[n].classList.toggle('lit',k.lit.indexOf(n)>-1); mEls[n].classList.toggle('dim',k.dim.indexOf(n)>-1); mEls[n].classList.remove('flip'); });
+    var bars=document.querySelectorAll('#models .w i'); for(var i=0;i<bars.length;i++){ bars[i].style.width=(b>=1?bars[i].getAttribute('data-w'):0)+'%'; }
+    var dd=dots.children; for(var j=0;j<dd.length;j++) dd[j].classList.toggle('on',j===b);
+    if(k.task) flyTo(k.to,k.task,k.icon); else $('chip').classList.remove('show'); $('prev').disabled=b===0; $('next').disabled=b===beats.length-1; speak(k.t);
+    if(b===beats.length-1){ stop(); if(!G.done.cena&&G.entered){ award('curioso'); completeMission('cena',200); } } }
+  function tick(){ if(b<beats.length-1){b++;render(); timer=setTimeout(tick,STEP)} else stop(); }
+  function start(){ playing=true; $('play').textContent='Pausar'; if(b===beats.length-1){b=0;render()} timer=setTimeout(tick,STEP); }
+  function stop(){ playing=false; $('play').textContent=b===beats.length-1?'Rever':'Reproduzir'; clearTimeout(timer); }
+  $('play').addEventListener('click',function(){ if(!gate('cena')) return; playing?(stop(),hush()):start(); });
+  $('prev').addEventListener('click',function(){ if(!gate('cena')) return; clearTimeout(timer); if(b>0){b--;render()} if(playing) timer=setTimeout(tick,STEP); });
+  $('next').addEventListener('click',function(){ if(!gate('cena')) return; clearTimeout(timer); if(b<beats.length-1){b++;render()} if(playing) timer=setTimeout(tick,STEP); });
+  render(); window.addEventListener('resize',function(){ if(beats[b].task) flyTo(beats[b].to,beats[b].task,beats[b].icon); });
+
+  /* ---------- missão 2: quiz relâmpago ---------- */
+  var Q=[
+    {s:'Chegaram 40 publicações. Você precisa separar o que tem prazo do que é só ciência.',o:['Haiku','Sonnet','Opus','Fable'],a:0,e:'Classificar é tarefa leve e repetida. O prazo em si, confira no Astrea.'},
+    {s:'Comparar três orçamentos de fornecedor e escrever a recomendação para a diretoria.',o:['Haiku','Sonnet','Opus','Fable'],a:1,e:'Poucos dados e um texto curto: produção do dia a dia, o pleno resolve.'},
+    {s:'Um parecer que cruza três contratos de RPPS com a legislação e aponta riscos.',o:['Haiku','Sonnet','Opus','Fable'],a:2,e:'Vários documentos e raciocínio encadeado pedem o sênior. A revisão de sempre continua.'},
+    {s:'Chegaram 30 e-mails no financeiro. Separar por assunto: nota, cobrança, contabilidade.',o:['Haiku','Sonnet','Opus','Fable'],a:0,e:'Triagem em volume: leve e repetida. Haiku.'},
+    {s:'O resumo do Sonnet veio raso para um caso com várias decisões interligadas. O que fazer?',o:['Mandar assim mesmo','Ir direto ao Fable','Subir um degrau: Opus','Repetir no Haiku'],a:2,e:'Subir um degrau de cada vez. O Fable fica para quando o Opus não der conta.'},
+    {s:'Simular um acordo de precatório com deságio, prazo, custo do capital e vários cenários, em rodadas.',o:['Haiku','Sonnet','Opus','Fable'],a:3,e:'Muitas variáveis e idas e vindas: o Fable, de forma combinada, depois de tentar o Opus. O cálculo final é de quem fecha.'}
+  ];
+  var qi=0, qT=null, qLeft=20, qStreak=0, qHits=0, qPts=0, qLock=false;
+  var SHAPES=['<svg class="shape" viewBox="0 0 24 24"><path d="M12 3l9 18H3z" fill="#fff"/></svg>','<svg class="shape" viewBox="0 0 24 24"><path d="M12 2l10 10-10 10L2 12z" fill="#fff"/></svg>','<svg class="shape" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#fff"/></svg>','<svg class="shape" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="#fff"/></svg>'];
+  function qShow(){ var q=Q[qi]; $('qn').textContent=(qi+1)+' / '+Q.length; $('qstem').textContent=q.s; var g=$('qgrid'); g.innerHTML=''; q.o.forEach(function(o,k){ var bt=document.createElement('button'); bt.type='button'; bt.className='qopt c'+k; bt.style.setProperty('--k',k); bt.innerHTML=SHAPES[k]+'<span>'+o+'</span>'; bt.addEventListener('click',function(){ qAnswer(k,bt); }); g.appendChild(bt); });
+    qLeft=20; qLock=false; $('qsec').textContent=qLeft; $('qbar').style.transform='scaleX(1)'; clearInterval(qT); sfx('tick');
+    qT=setInterval(function(){ qLeft-=0.1; if(qLeft<=0){ qLeft=0; clearInterval(qT); qAnswer(-1,null); } $('qsec').textContent=Math.ceil(qLeft); $('qbar').style.transform='scaleX('+(qLeft/20)+')'; },100); }
+  function qAnswer(k,bt){ if(qLock) return; qLock=true; clearInterval(qT); var q=Q[qi], ok=k===q.a; var opts=$('qgrid').children; for(var i=0;i<opts.length;i++){ opts[i].disabled=true; if(i===q.a) opts[i].classList.add('right'); else if(i===k) opts[i].classList.add('wrong'); }
+    var gain=0; if(ok){ qHits++; qStreak++; gain=Math.round(300*(0.5+0.5*qLeft/20))+(qStreak>1?50*(qStreak-1):0); qPts+=gain; addPts(gain); flash('ok'); sfx('ok'); if(bt){ var r=bt.getBoundingClientRect(); sparks(r.left+r.width/2,r.top); } } else { qStreak=0; flash('bad'); sfx('bad'); shakeBody(); }
+    $('qstreak').textContent=qStreak>1?'sequência ×'+qStreak:'';
+    var fb=document.createElement('div'); fb.className='qfb'+(ok?'':' bad'); fb.innerHTML='<div><div class="big">'+(ok?(qLeft>14?'Rápido e certo!':'Correto!'):(k<0?'Tempo esgotado':'Não foi dessa vez'))+'</div>'+(ok?'<div class="pts">+'+fmt(gain)+'</div>':'')+'<p>'+q.e+'</p></div>'; $('qwrap').appendChild(fb); speak((ok?'Correto. ':'Não foi dessa vez. ')+q.e);
+    setTimeout(function(){ fb.remove(); qi++; if(qi<Q.length) qShow(); else qEnd(); },2200); }
+  function qEnd(){ $('qlive').hidden=true; var e=$('qend'); e.hidden=false; var msg=qHits===Q.length?'Perfeito. Nenhuma dúvida sobre quem faz o quê.':(qHits>=4?'Boa. A escolha já está quase automática.':'Vale rever a cena antes do dia de trabalho.');
+    e.innerHTML='<div class="big">'+qHits+' de '+Q.length+' · +'+fmt(qPts)+' pontos</div><p>'+msg+'</p><div class="roundbtn" style="justify-content:center"><button type="button" id="qagain">Jogar de novo</button></div>';
+    if(qHits>=4) award('reflexo'); if(qHits===Q.length) award('certeiro'); completeMission('quiz',0); sfx('big');
+    $('qagain').addEventListener('click',function(){ qi=0;qStreak=0;qHits=0;qPts=0; e.hidden=true; $('qlive').hidden=false; qShow(); }); }
+  $('qgo').addEventListener('click',function(){ if(!gate('quiz')) return; $('qstart').hidden=true; $('qlive').hidden=false; banner('Quiz relâmpago','seis situações, vinte segundos'); setTimeout(qShow,900); });
+
+  /* ---------- missão 3: seletor ---------- */
+  var info={haiku:{why:'Tarefa curta e objetiva: classificar, extrair, corrigir ou responder algo pontual. O modelo mais leve resolve e quase não gasta a assinatura.',up:'Se a resposta vier rasa, suba para o Sonnet.'},
+    sonnet:{why:'Tarefa de produção do dia a dia: redigir, resumir, revisar ou montar um documento a partir de um modelo. É o padrão do grupo.',up:'Se precisar cruzar vários documentos ou raciocinar mais fundo, suba para o Opus.'},
+    opus:{why:'Tarefa que cruza fontes ou pede raciocínio mais longo: parecer, contrato com cláusulas interligadas, consolidação de gravação, análise com planilha.',up:'Se mesmo assim faltar profundidade, ou a tarefa tiver muitos passos encadeados, combine o uso do Fable.'},
+    fable:{why:'Problema difícil ou trabalho longo que roda sozinho: estratégia, cenário, tarefa de muitos passos. Pesa para todos, então o uso é combinado e raro.',up:'Antes de usar, tente o Opus: na maior parte das vezes ele dá conta.'}};
+  var rules=[[/ortograf|gramátic|corrig|revis(ar|e|ão) (o |um |a )?(e-?mail|texto curto)|traduz|classific|triag|extra(ir|ia)|liste|listar|o que significa|dúvida (rápida|simples)|resumo curto|resumir (um |o )?(e-?mail|parágrafo|publica)/i,'haiku',3],[/publica(ç|c)(ão|ões)|planilha simples|tabela simples|datas? e valores|valores e datas|campos|conferir se/i,'haiku',2],[/rascunho|e-?mail|petição|peça|resum|ata|proposta|mensagem|relat[óo]rio|revis|minuta|comunicad|apresenta[çc][ãa]o curta|roteiro/i,'sonnet',3],[/decis[ãa]o|senten[çc]a|ac[óo]rd[ãa]o|cliente|contrato/i,'sonnet',1],[/parecer|cruz|v[áa]rios|tr[êe]s|quatro|cinco|cl[áa]usulas|consolid|grava[çc][ãa]o|transcri[çc][ãa]o|longa|longo|duas horas|an[áa]lise|comparar|skill|projeto|apresenta[çc][ãa]o completa|planilha.*(cruz|v[áa]rias|fontes)|due diligence|auditoria|precat[óo]rio inteiro/i,'opus',3],[/p[áa]ginas|inteiro|completo|todos os|processo inteiro|complexo/i,'opus',1],[/estrat[ée]gi|cen[áa]rio|2027|planejamento|muitos passos|automatiz|rodar sozinho|opus n[ãa]o|n[ãa]o deu conta|pesquisa profunda|modelo financeiro|or[çc]amento anual|60 documentos|v[áa]rias rodadas/i,'fable',3]];
+  function suggest(txt){ var s={haiku:0,sonnet:0.5,opus:0,fable:0}; rules.forEach(function(r){ if(r[0].test(txt)) s[r[1]]+=r[2]; }); if(txt.split(/\s+/).length>40) s.opus+=1; var best='sonnet',max=-1; names.forEach(function(k){ if(s[k]>max){max=s[k];best=k} }); if(best==='fable'&&s.opus===0&&s.fable<4) best='opus'; return best; }
+  function showPick(){ if(!gate('seletor')) return; var txt=$('tarefa').value.trim(); if(!txt){toast('Descreva a tarefa primeiro.');return} var k=suggest(txt), r=info[k]; $('resAv').querySelector('use').setAttribute('href','#av-'+k); $('pickn').textContent='Use o '+label[k]; $('why').textContent=r.why; $('up').textContent=r.up; $('result').hidden=false;
+    var Ld=$('ladder').children, idx=names.indexOf(k); for(var i=0;i<4;i++) Ld[i].classList.toggle('on',i<=idx); sfx('ok'); speak('Use o '+label[k]+'. '+r.why); if(!G.done.seletor){ award('tradutor'); completeMission('seletor',150); } }
+  $('sugerir').addEventListener('click',showPick);
+  Array.prototype.forEach.call($('chips').querySelectorAll('button'),function(c){ c.addEventListener('click',function(){ $('tarefa').value=this.textContent.trim(); showPick(); }); });
+
+  /* ---------- missão 4: dia de trabalho ---------- */
+  var POOL=[
+    {r:'Supervisão',t:'Separar as publicações do dia: prazo, ciência ou arquivo',k:'haiku',i:'i-mail',h:'Classificar, não redigir.',e:'Classificar é tarefa leve e repetida. O prazo em si, confira no Astrea.'},
+    {r:'Todos',t:'Corrigir o português de um e-mail antes de enviar',k:'haiku',i:'i-spell',h:'Uma correção pontual.',e:'Correção pontual: o mais leve resolve e quase não consome.'},
+    {r:'Financeiro',t:'Tirar valor, vencimento e parcelas de um contrato para a planilha de contas a receber',k:'haiku',i:'i-calc',h:'Extrair dados de um documento só.',e:'Extração simples de um documento: trabalho de estagiário rápido.'},
+    {r:'Financeiro',t:'Separar os e-mails do financeiro por assunto: nota, cobrança, contabilidade',k:'haiku',i:'i-mail',h:'Triagem em volume.',e:'Triagem em volume: leve e repetida.'},
+    {r:'Advocacia',t:'Listar os documentos que um despacho pede para juntar',k:'haiku',i:'i-folder',h:'Só listar o que está escrito.',e:'Extrair uma lista de um texto curto: tarefa leve.'},
+    {r:'Themis',t:'Conferir se um ofício requisitório traz CNPJ, valor e data certos',k:'haiku',i:'i-check',h:'Checar campos, não analisar.',e:'Conferência de campos num documento só: Haiku.'},
+    {r:'Todos',t:'Explicar para um estagiário novo o que é RPV',k:'haiku',i:'i-bulb',h:'Dúvida pontual.',e:'Dúvida simples, resposta curta: Haiku.'},
+    {r:'Advocacia',t:'Resumir uma decisão de 15 páginas em linguagem simples para o cliente',k:'sonnet',i:'i-doc',h:'Redigir com tom adequado.',e:'Resumir e adaptar o tom é produção do dia a dia.'},
+    {r:'Advocacia',t:'Montar a proposta de um caso novo pela skill de proposta da equipe',k:'sonnet',i:'i-hand',h:'A skill já traz o padrão.',e:'A skill já carrega o padrão; o modelo só preenche e ajusta.'},
+    {r:'Todos',t:'Transformar as anotações da reunião com o cliente em ata',k:'sonnet',i:'i-clock',h:'Texto a partir de notas.',e:'Texto a partir de anotações: produção, sem cruzamento.'},
+    {r:'Financeiro',t:'E-mail de cobrança educado para um cliente com parcela atrasada',k:'sonnet',i:'i-mail',h:'Um e-mail bem escrito.',e:'Redação com tom cuidadoso: o pleno resolve. O envio continua pelo e-mail do financeiro.'},
+    {r:'Advocacia',t:'Mensagem de andamento do processo para o cliente, no modelo do escritório',k:'sonnet',i:'i-doc',h:'Comunicação padrão.',e:'Mensagem a partir do modelo padrão: Sonnet.'},
+    {r:'Advocacia',t:'Primeira versão de uma petição simples a partir do modelo pronto',k:'sonnet',i:'i-scale',h:'Há modelo; é preencher bem.',e:'Peça simples com modelo: produção do dia a dia, com a revisão de sempre.'},
+    {r:'Advocacia',t:'Roteiro de perguntas para a primeira reunião com um cliente trabalhista',k:'sonnet',i:'i-hand',h:'Estruturar uma conversa.',e:'Montar um roteiro é redação estruturada: Sonnet.'},
+    {r:'Administrativo',t:'Comparar três orçamentos de fornecedor e escrever a recomendação',k:'sonnet',i:'i-calc',h:'Poucos dados, texto curto.',e:'Comparação simples com redação: Sonnet.'},
+    {r:'Sócios',t:'Pauta da reunião de sócios a partir dos pontos pendentes da semana',k:'sonnet',i:'i-clock',h:'Organizar itens em pauta.',e:'Estruturar uma pauta é redação organizada: Sonnet.'},
+    {r:'Advocacia',t:'Parecer que cruza três contratos de RPPS com a legislação',k:'opus',i:'i-scale',h:'Vários documentos de uma vez.',e:'Vários documentos e raciocínio encadeado pedem o sênior.'},
+    {r:'Todos',t:'Consolidar a gravação de uma reunião de duas horas, com quem disse o quê',k:'opus',i:'i-mic',h:'Material longo, várias vozes.',e:'Material longo, com quem falou o quê: cabe ao Opus.'},
+    {r:'Advocacia',t:'Revisar um contrato de 40 páginas com cláusulas que dependem umas das outras',k:'opus',i:'i-doc',h:'Cláusulas interligadas.',e:'Cláusulas interligadas pedem leitura cruzada: Opus.'},
+    {r:'Financeiro',t:'Cruzar o relatório do Omie com o extrato do banco e apontar as diferenças',k:'opus',i:'i-calc',h:'Duas fontes para conciliar.',e:'Conciliar duas fontes com regras: trabalho do sênior. O número final, confira no sistema.'},
+    {r:'Advocacia',t:'Adaptar a skill de proposta para a sua área, com os critérios dela',k:'opus',i:'i-bulb',h:'Ajustar a ferramenta, não só usar.',e:'Ajustar uma skill é desenhar um processo: pede o Opus.'},
+    {r:'Themis',t:'Resumir um processo de precatório inteiro: origem, fases, valores e riscos',k:'opus',i:'i-folder',h:'Processo inteiro, várias fases.',e:'Leitura longa com síntese estruturada: Opus.'},
+    {r:'Supervisão',t:'Relatório mensal de valores a receber a partir dos casos acompanhados',k:'opus',i:'i-chart',h:'Vários casos, um relatório.',e:'Consolidar vários casos num relatório: Opus, com os valores conferidos no tribunal.'},
+    {r:'Sócios',t:'Analisar a proposta de um cliente grande com contrato, anexos e histórico de e-mails',k:'opus',i:'i-folder',h:'Vários documentos e um histórico.',e:'Contrato, anexos e histórico juntos: Opus.'},
+    {r:'Advocacia',t:'Estratégia de um caso complexo com 60 documentos, em várias rodadas',k:'fable',i:'i-chart',h:'Problema aberto, longo.',e:'Problema aberto e longo: o Fable, de forma combinada, depois de tentar o Opus.'},
+    {r:'Themis',t:'Simular um acordo de precatório com várias variáveis: deságio, prazo, custo do capital e cenários',k:'fable',i:'i-calc',h:'Muitas variáveis, várias rodadas.',e:'Simulação com muitas variáveis e idas e vindas: Fable, combinado. O cálculo final é refeito por quem fecha a operação.'},
+    {r:'Advocacia',t:'Estudo completo de uma tese nova nos tribunais superiores, com várias rodadas de pesquisa',k:'fable',i:'i-scale',h:'Quando o Opus não bastou.',e:'Pesquisa profunda e iterativa: Fable, depois de tentar o Opus. Cada julgado, aberto na fonte.'},
+    {r:'Administrativo',t:'Montar a lista de compras do mês a partir dos pedidos das áreas',k:'haiku',i:'i-folder',h:'Juntar itens numa lista.',e:'Consolidar pedidos numa lista: tarefa leve.'},
+    {r:'Administrativo',t:'Redigir o comunicado da mudança de sede para clientes e fornecedores',k:'sonnet',i:'i-mail',h:'Um comunicado bem escrito.',e:'Redação com tom institucional: Sonnet, no modelo do escritório.'},
+    {r:'Administrativo',t:'Montar o checklist de pré-chegada de um colaborador novo: e-mail, acessos, máquina',k:'sonnet',i:'i-check',h:'Organizar passos numa lista.',e:'Estruturar um checklist é redação organizada: Sonnet.'},
+    {r:'Administrativo',t:'Comparar três cotações de prestador com critérios diferentes e recomendar uma',k:'opus',i:'i-calc',h:'Critérios cruzados, não só preço.',e:'Comparar propostas com critérios cruzados pede o sênior.'},
+    {r:'Supervisão',t:'Montar a agenda de prazos da semana a partir das publicações já separadas',k:'haiku',i:'i-clock',h:'Extrair datas, não decidir.',e:'Extrair datas e montar a agenda: tarefa leve. O prazo fatal, confira no sistema.'},
+    {r:'Supervisão',t:'Escrever a devolutiva de revisão para um advogado novo, com tom construtivo',k:'sonnet',i:'i-spell',h:'Texto curto, tom cuidadoso.',e:'Redação com tom cuidadoso: Sonnet.'},
+    {r:'Supervisão',t:'Revisar a petição do estagiário apontando o que falta antes de assinar',k:'opus',i:'i-scale',h:'Revisar exige cruzar peça e fatos.',e:'Revisão com critério, cruzando peça, fatos e tese: Opus. Quem assina confere.'},
+    {r:'Sócios',t:'Preparar a fala de abertura da reunião mensal com os três pontos do mês',k:'sonnet',i:'i-mic',h:'Texto curto a partir de pontos.',e:'Redação a partir de pontos definidos: Sonnet.'},
+    {r:'Sócios',t:'Analisar a precificação de um contrato de RPPS em três faixas, com custos e margem',k:'opus',i:'i-calc',h:'Várias variáveis, uma análise.',e:'Análise com várias variáveis e fontes: Opus. O número final é decisão de quem fecha.'},
+    {r:'Sócios',t:'Mapear riscos e oportunidades de um nicho novo a partir de relatórios setoriais, em várias rodadas',k:'fable',i:'i-chart',h:'Pesquisa profunda, aberta.',e:'Pesquisa profunda e iterativa num tema aberto: Fable, combinado.'},
+    {r:'Themis',t:'Extrair de um lote de ofícios o número do processo, o valor e a data',k:'haiku',i:'i-doc',h:'Extrair campos em volume.',e:'Extração em volume de campos simples: Haiku. Conferência por amostra.'},
+    {r:'Themis',t:'E-mail padrão de atualização ao investidor sobre o andamento de um precatório',k:'sonnet',i:'i-mail',h:'Comunicação padrão.',e:'Mensagem a partir do modelo: Sonnet, sem dado sensível do investidor no chat.'},
+    {r:'Financeiro',t:'Classificar os lançamentos "a verificar" do extrato por tipo',k:'haiku',i:'i-calc',h:'Classificar linhas.',e:'Classificação de linhas: tarefa leve. O lançamento certo, confira com quem pagou.'},
+    {r:'Financeiro',t:'E-mail à contabilidade com os comprovantes de retenção na fonte, completo',k:'sonnet',i:'i-mail',h:'E-mail completo e claro.',e:'Redação clara com os anexos certos: Sonnet. O envio sai pelo e-mail do financeiro.'},
+    {r:'Financeiro',t:'Checklist de fechamento do mês para mandar à contabilidade',k:'sonnet',i:'i-check',h:'Organizar passos.',e:'Checklist a partir da rotina: Sonnet.'}
+  ];
+  var ROUNDS=[{n:'Manhã',h0:8},{n:'Tarde',h0:13},{n:'Plantão',h0:18}], RS=9, GOAL=2000;
+  var deck=$('deck'), round=0, T=[], hits=0, left=0, dayPts=0, combo=1, streak=0, clean=0, hints=0, done=false, wasteRound=false, roundSpent=0, roundCap=0, totalSpent=0, totalIdeal=0, counts={haiku:0,sonnet:0,opus:0,fable:0}, roundHits=0, urgentHits=0, pu=2, puMode=false, started=false, roundStars=[];
+  var best=+(store.get(W+'best')||0); $('best').textContent=fmt(best); $('goal').textContent=fmt(GOAL);
+  var dealt=[[],[],[]], SHOWN=27;
+  function buildDeal(){ var rnd=function(){return Math.random()-.5}; var mine=POOL.filter(function(c){return c.r===G.area}).sort(rnd), others=POOL.filter(function(c){return c.r!==G.area}).sort(rnd);
+    var byK={haiku:[],sonnet:[],opus:[],fable:[]}; others.forEach(function(c){byK[c.k].push(c)}); var cycle=['fable','opus','haiku','sonnet','sonnet','haiku','opus','haiku','sonnet'];
+    dealt=[[],[],[]]; for(var r=0;r<3;r++){ var n=0; while(n<2&&mine.length){ dealt[r].push(mine.shift()); n++; } var ci=0, guard=0; while(dealt[r].length<SHOWN/3&&guard<60){ var k=cycle[ci%cycle.length]; ci++; guard++; if(byK[k].length) dealt[r].push(byK[k].shift()); } dealt[r].sort(rnd); } }
+  function updHud(){ $('hits').textContent=hits; $('left').textContent=left; $('clean').textContent=clean; $('combo').textContent='×'+combo; $('puN').textContent=pu; $('pu').disabled=pu===0||done; renderHud();
+    var pct=roundCap?Math.min(100,Math.round(100*roundSpent/roundCap)):0; $('dayfill').style.width=pct+'%'; $('daypct').textContent=pct+'%'; $('day').classList.toggle('hot',pct>=75);
+    var h=ROUNDS[round].h0+Math.min(RS,RS-left)*0.5; $('hourPill').lastChild.textContent=(h<10?'0':'')+Math.floor(h)+'h'+(h%1?'30':'00');
+    $('roundStars').innerHTML=roundStars.map(function(s,i){return '<span class="rs"><span class="rsl">'+ROUNDS[i].n+' </span>'+[1,2,3].map(function(j){return '<i class="'+(j<=s?'on':'')+'">★</i>'}).join('')+'</span>'}).join(''); }
+  function bumpPts(){ var n=$('pts'); n.classList.add('bump'); setTimeout(function(){n.classList.remove('bump')},180); }
+  function dealRound(){ T=dealt[round]; left=T.length; roundHits=0; wasteRound=true; roundSpent=0; roundCap=0; T.forEach(function(c){roundCap+=weight[c.k]}); roundCap=Math.round(roundCap*1.8); if(round===2) roundCap=Math.round(roundCap*0.75); deck.innerHTML='';
+    var urg=[]; while(urg.length<2&&urg.length<T.length){ var u=Math.floor(Math.random()*T.length); if(urg.indexOf(u)<0) urg.push(u); }
+    T.forEach(function(c,i){ var el=document.createElement('div'); var mine=c.r===G.area||c.r==='Todos'; el.className='card deal'+(mine?' mine':''); el.style.setProperty('--dl',(i*90)+'ms'); el.setAttribute('data-i',i); el.setAttribute('tabindex','0');
+      el.innerHTML='<svg class="ico"><use href="#'+c.i+'"/></svg><span><em class="role">'+c.r+(c.r===G.area?' · sua área':(c.r==='Todos'?' · vale mais':''))+'</em>'+c.t+'</span><span class="hint" title="Dica (custa 30 pontos)">?</span><span class="tip">'+c.h+'</span>'; deck.appendChild(el); setTimeout(function(){sfx('tick')},i*90); });
+    setTimeout(function(){ urg.forEach(function(i){ var el=deck.querySelector('.card[data-i="'+i+'"]'); if(!el) return; el.classList.add('urgent'); el.setAttribute('data-exp',String(Date.now()+25000)); var tb=document.createElement('i'); tb.className='tbar'; el.appendChild(tb); setTimeout(function(){ el.classList.remove('urgent'); el.removeAttribute('data-exp'); },25000); }); sfx('tick'); }, 1500);
+    $('total').textContent=SHOWN; $('roundPill').textContent=ROUNDS[round].n+' · fase '+(round+1)+' de 3'; $('nextRound').hidden=true; done=false; banner(ROUNDS[round].n,'fase '+(round+1)+' de 3');
+    $('fb').className='fb'; $('fb').textContent= round===0 ? 'As demandas são do dia a dia do escritório, do financeiro e da Themis; a etiqueta diz de quem é. Comece pela que parecer mais simples. Se errar, o cartão volta; a dica (?) custa 30 pontos.' : (round===1 ? 'Tarde: as demandas ficam mais parecidas entre si. Olhe o tamanho da tarefa, não o assunto.' : 'Plantão: a assinatura da fase está mais curta. Cada escolha pesada conta.'); updHud(); }
+  $('startDay').addEventListener('click',function(){ if(!gate('jogo')) return; started=true; buildDeal(); $('startWrap').hidden=true; $('gameBody').hidden=false; $('rankAv').querySelector('use').setAttribute('href','#pj-'+(G.pj||1)); $('playerPill').textContent=(G.nome||'você')+' · '+G.area; dealRound(); sfx('big'); speak('Bom dia'+(G.nome?', '+G.nome:'')+'. Começa a manhã.'); });
+  deck.addEventListener('click',function(e){ var h=e.target.closest('.hint'); var card=e.target.closest('.card'); if(!card) return;
+    if(puMode){ puMode=false; $('pu').classList.remove('on'); pu--; var c=T[+card.getAttribute('data-i')]; var wrong=names.filter(function(k){return k!==c.k}).sort(function(){return Math.random()-.5}).slice(0,2); wrong.forEach(function(k){ var s=document.querySelector('.slot[data-k="'+k+'"]'); s.classList.add('dimmed'); setTimeout(function(){s.classList.remove('dimmed')},8000); }); $('fb').className='fb'; $('fb').textContent='A supervisão descartou dois modelos para essa demanda. Você tem oito segundos.'; sfx('tick'); updHud(); return; }
+    if(!h||card.classList.contains('tipped')) return; card.classList.add('tipped'); hints++; addPts(-30); var r=h.getBoundingClientRect(); floatPts(r.left,r.top,'−30',true); sfx('tick'); updHud(); });
+  $('pu').addEventListener('click',function(){ if(pu<=0||done) return; puMode=!puMode; this.classList.toggle('on',puMode); toast(puMode?'Agora toque na demanda em dúvida.':'Cancelado.'); });
+  function slotAt(x,y){ var slots=document.querySelectorAll('.slot'); for(var i=0;i<slots.length;i++){ var r=slots[i].getBoundingClientRect(); if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom) return slots[i]; } return null; }
+  function drop(card,slot,px,py){ var c=T[+card.getAttribute('data-i')], k=slot.getAttribute('data-k'), fb=$('fb'); roundSpent+=weight[k]; totalSpent+=weight[k];
+    if(k===c.k){ hits++; roundHits++; left--; counts[k]++; totalIdeal+=weight[k]; slot.querySelector('.cnt').textContent=counts[k]+(counts[k]===1?' cartão':' cartões'); streak++; combo=Math.min(5,1+Math.floor(streak/2)); var gain=100*combo, tags=[]; if(combo>1) tags.push('combo ×'+combo); if(card.classList.contains('mine')){ gain=Math.round(gain*1.5); tags.push('sua área ×1,5'); }
+      var exp=+(card.getAttribute('data-exp')||0); if(exp&&Date.now()<exp){ gain*=2; urgentHits++; tags.push('urgente ×2'); if(urgentHits>=2) award('urgent'); } if(!card.classList.contains('tipped')) clean++; dayPts+=gain; addPts(gain,px,py+30);
+      slot.classList.add('good'); setTimeout(function(){slot.classList.remove('good')},600); card.classList.add('gone'); setTimeout(function(){card.remove()},350);
+      fb.className='fb ok'; fb.innerHTML='<svg class="ico"><use href="#i-check"/></svg> '+label[k]+' · +'+fmt(gain)+(tags.length?' ('+tags.join(', ')+')':'')+'. '+c.e; sfx('ok'); flash('ok'); bumpPts(); comboBig(combo); sparks(px,py+30); speak('Certo. '+c.e); if(combo===5) award('combo5'); if(left===1) toast('Última demanda da fase!'); }
+    else { streak=0; combo=1; addPts(-20,px,py); slot.classList.add('bad'); setTimeout(function(){slot.classList.remove('bad')},500); card.classList.add('back'); setTimeout(function(){card.classList.remove('back')},450); var heavier=names.indexOf(k)>names.indexOf(c.k); if(heavier) wasteRound=false;
+      fb.className='fb bad'; fb.textContent=(heavier?('Dá certo, mas gasta '+Math.round(weight[k]/weight[c.k])+' vezes mais do que precisa. Tente um modelo mais leve.'):('Vai ficar raso para essa tarefa. Suba um degrau.'))+' −20.'; sfx('bad'); flash('bad'); shakeBody(); comboBig(0); speak(fb.textContent);
+      card.setAttribute('data-tries',(+(card.getAttribute('data-tries')||0))+1); if(+card.getAttribute('data-tries')>=2){ left--; totalIdeal+=weight[c.k]; card.classList.add('gone'); setTimeout(function(){card.remove()},350); fb.textContent+=' A sugerida era '+label[c.k]+'. '+c.e; } }
+    updHud(); if(roundSpent>=roundCap&&left>0){ endRound(true); return; } if(left===0) endRound(false); }
+  function endRound(burst){ done=true; var fb=$('fb'); puMode=false; $('pu').classList.remove('on'); Array.prototype.forEach.call(deck.querySelectorAll('.card'),function(el){el.classList.add('gone')});
+    var ratio=roundHits/T.length, st=burst?1:(ratio>=.85&&wasteRound?3:(ratio>=.6?2:1)); roundStars.push(st); var bol='<b>Boletim da fase:</b> '+roundHits+' de '+T.length+' demandas no modelo certo'+(wasteRound?', nenhum desperdício':', com desperdício')+'. ';
+    if(burst){ fb.className='fb bad'; fb.innerHTML=bol+'A assinatura da fase acabou antes das demandas: as que sobraram esperam a janela reabrir. Isso pode acontecer em qualquer dia quando modelos pesados vão para tarefas leves; a saída é começar pelo mais leve.'; sfx('bad'); speak('A assinatura da fase acabou antes das demandas.'); }
+    else { if(wasteRound) award('clean'); fb.className='fb ok'; fb.innerHTML=bol+(st===3?'Fase perfeita.':(st===2?'Boa fase. Para três estrelas: sem desperdício e quase tudo certo.':'Vale rever os perfis dos quatro modelos antes da próxima.')); }
+    updHud(); if(round<2){ var nb=$('nextRound'); nb.hidden=false; nb.textContent=round===0?'Começar a tarde':'Entrar no plantão'; } else finish(); }
+  $('nextRound').addEventListener('click',function(){ round++; dealRound(); sfx('tick'); $('jogo').scrollIntoView({behavior:'smooth',block:'start'}); });
+  function finish(){ var sc=$('score'); sc.hidden=false; var total=SHOWN; if(totalIdeal>0&&totalSpent<=totalIdeal*1.15) award('econ'); if(hits===total) award('day');
+    var stars=roundStars.reduce(function(a,c){return a+c},0), fin=stars>=8?3:(stars>=5?2:1), L=lvl(); var newBest=dayPts>best&&best>0; if(dayPts>best){best=dayPts;store.set(W+'best',String(best));$('best').textContent=fmt(best);}
+    var sh=(newBest?'<div class="stampx">Novo recorde</div>':'')+'<div class="stars">'+[1,2,3].map(function(i){return '<span class="'+(i<=fin?'on':'')+'">★</span>'}).join('')+'</div>'; var okDay=hits>=15;
+    if(okDay){ sc.className='score'; sc.innerHTML=sh+'<div class="big">Dia concluído: '+fmt(dayPts)+' pontos no dia, patente '+L.n+'</div>'+hits+' de '+total+' demandas no modelo certo'+(dayPts>=GOAL?', meta do dia batida':'')+'. Consumo: '+fmt(totalSpent)+' contra '+fmt(totalIdeal)+' do caminho ideal. Na prática, lembre: comece pelo mais leve e confira tudo antes de usar.'; banner('Dia concluído', fmt(dayPts)+' pontos'); completeMission('jogo',0); }
+    else { sc.className='score low'; sc.innerHTML=sh+'<div class="big">'+fmt(dayPts)+' pontos no dia. Vale rever a cena</div>'+hits+' de '+total+' no modelo certo. Releia o que cada personagem faz melhor (toque nos cartões para virar) e refaça o dia. O ponto central: o peso do modelo tem de combinar com o tamanho da tarefa.<div class="roundbtn"><button type="button" id="redo">Refazer o dia</button></div>'; speak(hits+' de '+total+'. Vale rever a cena.'); var rd=$('redo'); if(rd) rd.addEventListener('click',function(){ location.reload(); }); }
+    sc.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  var drag=null, dx=0, dy=0;
+  deck.addEventListener('pointerdown',function(e){ if(e.target.closest('.hint')||puMode) return; var card=e.target.closest('.card'); if(!card||done) return; e.preventDefault(); var r=card.getBoundingClientRect(); dx=e.clientX-r.left; dy=e.clientY-r.top;
+    var ph=document.createElement('div'); ph.className='card'; ph.style.visibility='hidden'; ph.style.width=r.width+'px'; ph.style.height=r.height+'px'; ph.id='ph'; card.parentNode.insertBefore(ph,card); card.classList.remove('deal'); card.classList.add('drag'); card.style.width=r.width+'px'; card.style.left=(e.clientX-dx)+'px'; card.style.top=(e.clientY-dy)+'px'; drag=card; try{card.setPointerCapture(e.pointerId)}catch(err){} });
+  document.addEventListener('pointermove',function(e){ if(!drag) return; drag.style.left=(e.clientX-dx)+'px'; drag.style.top=(e.clientY-dy)+'px'; var s=slotAt(e.clientX,e.clientY); Array.prototype.forEach.call(document.querySelectorAll('.slot'),function(el){el.classList.toggle('over',el===s)}); });
+  function endDrag(e){ if(!drag) return; var card=drag; drag=null; var s=slotAt(e.clientX,e.clientY); Array.prototype.forEach.call(document.querySelectorAll('.slot'),function(el){el.classList.remove('over')}); card.classList.remove('drag'); card.style.cssText=''; var ph=$('ph'); if(ph) ph.remove(); if(s) drop(card,s,e.clientX,e.clientY-30); }
+  document.addEventListener('pointerup',endDrag); document.addEventListener('pointercancel',endDrag);
+  var kbCard=null; deck.addEventListener('keydown',function(e){ var card=e.target.closest('.card'); if(!card) return; if(e.key==='Enter'){ kbCard=card; toast('Agora tecle 1 Haiku, 2 Sonnet, 3 Opus ou 4 Fable.'); } });
+  document.addEventListener('keydown',function(e){ if(!kbCard) return; var i=['1','2','3','4'].indexOf(e.key); if(i>-1){ var sl=document.querySelectorAll('.slot')[i], r=sl.getBoundingClientRect(); drop(kbCard,sl,r.left+r.width/2,r.top); kbCard=null; } });
+
+  /* ---------- missão 5: desafio ---------- */
+  var chk=$('chk'), chkLab=$('chkLab'); chk.checked=store.get(W+'chal')==='1'; chkLab.classList.toggle('on',chk.checked);
+  chk.addEventListener('change',function(){ if(!gate('desafio')){ this.checked=false; return; } store.set(W+'chal',this.checked?'1':'0'); chkLab.classList.toggle('on',this.checked); if(this.checked){ award('desafiante'); if(!G.done.desafio) completeMission('desafio',300); else saveResult(); toast('Desafio registrado. Agora conte no grupo.'); } });
+  $('shareMission').addEventListener('click',function(){ copy('*Desafio da semana 1*: resolvi "____" no *Haiku/Sonnet* em ____ minutos. Antes eu faria no modelo maior.','Linha copiada. Preencha e mande no grupo.'); });
+  $('shareAll').addEventListener('click',function(){ var n=Object.keys(G.med).length; copy('*Trilha Claude, semana 1*: '+(G.nome?G.nome+' fechou':'fechei')+' com *'+fmt(G.pts)+' pontos*, patente *'+lvl().n+'* e '+n+' medalha'+(n===1?'':'s')+'.','Resultado copiado. Cole no zap.'); });
+  function copy(msg,okmsg){ var ok=function(){toast(okmsg)}; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok,function(){toast(msg)})} else toast(msg); }
+
+  /* ---------- registro na planilha do Google (sem login) ---------- */
+  var SHEET_URL='COLE_AQUI_O_ENDERECO_DO_APP_DA_WEB';  /* termina em /exec */
+  var PID=store.get('hts-pid'); if(!PID){ PID='p-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8); store.set('hts-pid',PID); }
+  function note(t){ $('saveNote').textContent=t; }
+  function postRow(tipo){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return Promise.resolve(false);
+    var body={id:PID,tipo:tipo,semana:1,apelido:G.nome,area:G.area,personagem:G.pj,uso_antes:G.freq,pontos:G.pts,patente:lvl().n,missoes:Object.keys(G.done).length,medalhas:Object.keys(G.med).length,desafio:!!G.done.desafio,concluido:!!G.done.desafio,missao_atual:Math.min(curMission()+1,5),quando:new Date().toISOString()};
+    return fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(function(){return true}).catch(function(){return false}); }
+  function saveResult(){ postRow('progresso').then(function(ok){ if(ok) note('Progresso salvo neste aparelho. Envio à planilha realizado, sem confirmação de recebimento.'); else note('Progresso salvo neste aparelho. A sincronização com a planilha está indisponível.'); }); }
+  function savePresence(){ postRow('presenca'); loadTeam(); }
+  function loadTeam(){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return; fetch(SHEET_URL+'?acao=placar&semana=1').then(function(r){return r.json()}).then(function(d){ var n=d.entraram||0, c=d.concluiram||0; $('teamTxt').innerHTML=n?('Equipe na trilha: <b>'+n+'</b> '+(n===1?'pessoa já entrou':'pessoas já entraram')+' · <b>'+c+'</b> '+(c===1?'concluiu':'concluíram')+' a semana. O placar é de todos.'):'Equipe na trilha: assim que colegas entrarem, a contagem aparece aqui.'; }).catch(function(){}); }
+  $('signNote').textContent='Seu progresso fica salvo neste aparelho, sem login.';
+  loadTeam(); if(G.entered){ saveResult(); }
+
+  /* ---------- rodapé ---------- */
+  $('duvida').addEventListener('click',function(){ copy('Oi! Estou na semana 1 da Trilha Claude e fiquei com uma dúvida: ','Mensagem copiada. Cole no zap.'); });
+  $('reset').addEventListener('click',function(){ var bt=this; if(!bt._arm){ bt._arm=true; bt.textContent='Apagar todo o progresso? Toque de novo para confirmar'; bt.style.borderColor='var(--red)'; setTimeout(function(){ bt._arm=false; bt.textContent='Recomeçar a semana'; bt.style.borderColor=''; },5000); return; } ['pts','done','med','in','chal','best','freq'].forEach(function(k){store.del(W+k)}); location.reload(); });
+
+  renderHud(); drawMap();
+  if(G.entered){ $('storyTxt').innerHTML=STORY[curMission()]; }
+})();
+</script>
+
+</body>
+</html>
