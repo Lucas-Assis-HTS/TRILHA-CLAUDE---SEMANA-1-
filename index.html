@@ -907,16 +907,16 @@ body.shake{animation:bodyshake .4s}
   function copy(msg,okmsg){ var ok=function(){toast(okmsg)}; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok,function(){toast(msg)})} else toast(msg); }
 
   /* ---------- registro na planilha do Google (sem login) ---------- */
-  var SHEET_URL='COLE_AQUI_O_ENDERECO_DO_APP_DA_WEB';  /* termina em /exec */
+  var SHEET_URL='https://script.google.com/macros/s/AKfycbw6FyIok6SJnmjvYbCFVMdOEw6OBTrL9RfrvlrsGxg-eGpQr-xEVFZ7S95HGtpH6RB3ew/exec';  /* termina em /exec */
   var PID=store.get('hts-pid'); if(!PID){ PID='p-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8); store.set('hts-pid',PID); }
   function note(t){ $('saveNote').textContent=t; }
   function postRow(tipo){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return Promise.resolve(false);
     var body={id:PID,tipo:tipo,semana:1,apelido:G.nome,area:G.area,personagem:G.pj,uso_antes:G.freq,pontos:G.pts,patente:lvl().n,missoes:Object.keys(G.done).length,medalhas:Object.keys(G.med).length,desafio:!!G.done.desafio,concluido:!!G.done.desafio,missao_atual:Math.min(curMission()+1,5),quando:new Date().toISOString()};
     return fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(function(){return true}).catch(function(){return false}); }
   function saveResult(){ postRow('progresso').then(function(ok){ if(ok) note('Progresso salvo neste aparelho. Envio à planilha realizado, sem confirmação de recebimento.'); else note('Progresso salvo neste aparelho. A sincronização com a planilha está indisponível.'); }); }
-  function savePresence(){ postRow('presenca'); loadTeam(); }
+  function savePresence(){ postRow('presenca').then(function(){ loadTeam(); }); }
   function loadTeam(){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return; fetch(SHEET_URL+'?acao=placar&semana=1').then(function(r){return r.json()}).then(function(d){ var n=d.entraram||0, c=d.concluiram||0; $('teamTxt').innerHTML=n?('Equipe na trilha: <b>'+n+'</b> '+(n===1?'pessoa já entrou':'pessoas já entraram')+' · <b>'+c+'</b> '+(c===1?'concluiu':'concluíram')+' a semana. O placar é de todos.'):'Equipe na trilha: assim que colegas entrarem, a contagem aparece aqui.'; }).catch(function(){}); }
-  $('signNote').textContent='Seu progresso fica salvo neste aparelho, sem login.';
+  $('signNote').textContent='Seu progresso fica salvo neste aparelho e é enviado à planilha da equipe, sem login.';
   loadTeam(); if(G.entered){ saveResult(); }
 
   /* ---------- rodapé ---------- */
