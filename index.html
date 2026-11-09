@@ -495,7 +495,7 @@ body.shake{animation:bodyshake .4s}
     <button type="button" class="pc" data-p="5"><svg><use href="#pj-5"/></svg>Óculos</button>
     <button type="button" class="pc" data-p="6"><svg><use href="#pj-6"/></svg>Prancheta</button>
   </div>
-  <div class="form-row"><label for="nome">Seu nome, como a equipe te conhece</label><input id="nome" type="text" maxlength="40" placeholder="ex.: Ana Souza" autocomplete="name" autocapitalize="words" enterkeyhint="done"></div>
+  <div class="form-row"><label for="nome">Seu nome, como a equipe conhece você</label><input id="nome" type="text" maxlength="40" placeholder="ex.: Ana Souza" autocomplete="name" autocapitalize="words" enterkeyhint="done"></div>
   <div class="form-row"><label>Sua área</label>
     <div class="chips" id="areas">
       <button type="button" data-a="Advocacia">Advocacia</button><button type="button" data-a="Supervisão">Supervisão</button><button type="button" data-a="Financeiro">Financeiro</button><button type="button" data-a="Administrativo">Administrativo</button><button type="button" data-a="Themis">Themis</button><button type="button" data-a="Sócios">Sócios</button>
@@ -565,7 +565,7 @@ body.shake{animation:bodyshake .4s}
   <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 1 para liberar.</div>
   <p class="sub">Seis situações, vinte segundos cada. Quanto mais rápido acertar, mais pontos. Acertos seguidos dão bônus.</p>
   <div class="qwrap" id="qwrap">
-    <div class="qstart" id="qstart"><p>Leia a situação e toque no modelo certo antes do tempo acabar. O relógio começa quando você tocar em iniciar.</p><button class="primary" id="qgo" type="button"><svg class="ico"><use href="#i-bolt"/></svg> Iniciar o quiz</button></div>
+    <div class="qstart" id="qstart"><p>Leia a situação e toque no modelo certo antes de o tempo acabar. O relógio começa quando você tocar em iniciar.</p><button class="primary" id="qgo" type="button"><svg class="ico"><use href="#i-bolt"/></svg> Iniciar o quiz</button></div>
     <div id="qlive" hidden>
       <div class="qtop"><span id="qn">1 / 6</span><div class="qtimer"><i id="qbar"></i></div><span class="qsec" id="qsec">20</span><span id="qstreak"></span></div>
       <div class="qstem" id="qstem"></div>
@@ -960,7 +960,7 @@ body.shake{animation:bodyshake .4s}
   window.addEventListener('pagehide',function(){ if(lastBody&&store.get(W+'sync')&&navigator.sendBeacon){ try{ navigator.sendBeacon(SHEET_URL,new Blob([lastBody],{type:'text/plain;charset=utf-8'})); }catch(e){} } });
   function savePresence(){ postRow('presenca').then(function(){ loadTeam(); }); }
   function loadTeam(){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return; fetch(SHEET_URL+'?acao=placar&semana=1').then(function(r){return r.json()}).then(function(d){ var n=Math.max(0,parseInt(d.entraram,10)||0), c=Math.max(0,parseInt(d.concluiram,10)||0); $('teamTxt').innerHTML=n?('Equipe na trilha: <b>'+n+'</b> '+(n===1?'pessoa já entrou':'pessoas já entraram')+' · <b>'+c+'</b> '+(c===1?'concluiu':'concluíram')+' a semana. O placar é de todos.'):'Equipe na trilha: assim que colegas entrarem, a contagem aparece aqui.'; }).catch(function(){}); }
-  $('signNote').textContent='Sem login. Vão para a planilha da equipe: nome, área, frequência de uso, pontos, patente e missões. Servem para a contagem da equipe e para a direção acompanhar a meta; no grupo, só aparece o total.';
+  $('signNote').textContent='Sem login. Vão para a planilha da equipe: nome, área, personagem, frequência de uso, pontos, patente, missões e medalhas. Servem para a contagem da equipe e para a direção acompanhar a meta; no grupo, só aparece o total.';
   loadTeam(); if(G.entered){ saveResult(); }
 
   /* ---------- rodapé ---------- */
