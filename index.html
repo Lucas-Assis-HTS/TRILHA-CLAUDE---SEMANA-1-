@@ -3,6 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#17181a">
+<meta name="description" content="Semana 1 da Trilha Claude da HTS Advogados: qual modelo usar em cada tarefa. Cinco missões, 15 a 20 minutos.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="HTS Advogados">
+<meta property="og:title" content="Trilha Claude · Semana 1: qual modelo eu uso?">
+<meta property="og:description" content="Escolha seu personagem, cumpra 5 missões e descubra sua patente. 15 a 20 minutos, no seu ritmo.">
+<meta property="og:url" content="https://lucas-assis-hts.github.io/TRILHA-CLAUDE---SEMANA-1-/">
+<meta property="og:image" content="https://lucas-assis-hts.github.io/TRILHA-CLAUDE---SEMANA-1-/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Trilha Claude, semana 1: qual modelo eu uso? HTS Advogados">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2393282c'/%3E%3Cpath d='M32 12l18 20-18 20-18-20z' fill='none' stroke='%23efdbb2' stroke-width='5'/%3E%3C/svg%3E">
 <title>Trilha Claude · Semana 1</title>
 <style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&family=Commissioner:wght@300;400;600;700&display=swap">
@@ -37,6 +54,7 @@ section.locked > *:not(.mhead):not(.lockmsg){pointer-events:none;user-select:non
 .lockmsg button{pointer-events:auto;margin-left:auto;font-size:13px;padding:6px 10px}
 .lockmsg{display:none;align-items:center;gap:10px;background:var(--paper2);border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:14px;color:var(--muted)}
 .mhead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+@media (max-width:520px){.mhead{flex-wrap:wrap}.mreward{margin-left:0;flex-basis:100%;padding-left:2px}}
 .mnum{width:40px;height:40px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-family:var(--display);font-size:18px;color:#fff;flex:none;box-shadow:0 0 0 6px var(--red-soft)}
 .mnum.done{background:var(--ok);box-shadow:0 0 0 6px var(--ok-soft)}
 .mreward{margin-left:auto;font-size:12px;color:var(--sand);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
@@ -110,6 +128,14 @@ input[type=text]{font:inherit;padding:9px 12px;border:1px solid var(--line);bord
 .chips button{font-weight:400;font-size:14px;padding:6px 12px;border-radius:999px;background:var(--bg)}
 .chips button.on{border-color:var(--sand);background:var(--sand-soft);color:var(--sand);font-weight:600}
 .note{font-size:13px;color:var(--muted)}
+.linkbtn{display:inline-flex;align-items:center;gap:8px;font-weight:600;text-decoration:none;border:1px solid var(--sand);color:var(--sand);border-radius:10px;padding:9px 16px;transition:transform .15s,box-shadow .2s,background .2s}
+.linkbtn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.35);background:rgba(239,219,178,.08)}
+.linkbtn:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
+.linkbtn .ico{width:18px;height:18px}
+.alem{margin-top:16px;padding:14px 16px;border-radius:12px;border:1px dashed rgba(239,219,178,.45);background:var(--sand-soft)}
+.alem h3{font-family:var(--display);font-weight:400;font-size:19px;margin:0 0 4px;color:var(--sand)}
+.alem p{margin:4px 0 10px}
+.howto a{color:var(--sand)}
 /* ===== mapa de missões ===== */
 .map{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 6px 4px;overflow:hidden}
 .map svg.road{width:100%;height:auto;display:block}
@@ -413,13 +439,13 @@ body.shake{animation:bodyshake .4s}
 <section id="apresentacao">
   <div class="eyebrow">Apresentação</div>
   <h2>Por que uma trilha, e por que um jogo</h2>
-  <p class="lead">A HTS está construindo o seu planejamento estratégico para 2027, e um dos objetivos é aumentar a produtividade com inteligência artificial.<sup>1</sup><br>Na prática, devolver tempo ao que só o advogado faz: ouvir o cliente, decidir a tese, assinar com segurança.</p>
+  <p class="lead">A HTS está construindo o planejamento estratégico para 2027, e um dos objetivos é aumentar a produtividade com inteligência artificial.<sup>1</sup><br>Na prática, devolver tempo ao que só o advogado faz: ouvir o cliente, decidir a tese, assinar com segurança.</p>
   <p class="lead">Ferramenta a equipe já tem.<br>O que falta é um jeito comum de usar.</p>
-  <p class="lead strong">Essa trilha existe para conseguirmos adaptar cada vez mais esse jeito em hábito, uma semana de cada vez.</p>
+  <p class="lead strong">Essa trilha existe para transformarmos, cada vez mais, esse jeito em hábito, uma semana de cada vez.</p>
   <div class="intro-grid">
     <article class="icard" style="--d:0"><svg class="ico big"><use href="#i-scale"/></svg><h3>O que você ganha</h3>
       <p>Menos tempo em triagem, resumo e primeira versão.<br>Mais tempo em estratégia, audiência e cliente.</p>
-      <p>Quem já usa skills na equipe relata exatamente isso: a sobrecarga cai.<br>O ganho se sustenta quando é de todos: o que uma pessoa descobre vira padrão da casa.</p></article>
+      <p>Quem já usa skills na equipe (instruções salvas no Claude para tarefas que se repetem) relata exatamente isso: a sobrecarga cai.<br>O ganho se sustenta quando é de todos: o que uma pessoa descobre vira padrão da casa.</p></article>
     <article class="icard" style="--d:1"><svg class="ico big"><use href="#i-doc"/></svg><h3>Por que uma trilha, e não um manual</h3>
       <p>Advogado lê regra o dia inteiro.<br>Mais uma, guardada numa pasta, não muda a rotina de ninguém.</p>
       <p>Mudança que pega avança por passos curtos e visíveis, com vitórias que todos veem.<sup>2</sup> E só vale quando vira prática no expediente, não intenção na parede.<sup>3</sup> Por isso cada semana tem um desafio feito no seu próprio serviço e um fechamento no grupo.</p></article>
@@ -427,18 +453,20 @@ body.shake{animation:bodyshake .4s}
       <p>Jogo aqui não é brincadeira.<br>É usar a linguagem dos jogos para sustentar uma prática séria.<sup>4</sup></p>
       <p>Funciona quando atende três coisas que qualquer profissional reconhece: ver o próprio progresso, escolher o caminho e fazer junto com os pares.<sup>5</sup> Pontos e patentes engajam quando estão ligados a algo que importa no trabalho.<sup>6</sup></p></article>
     <article class="icard" style="--d:3"><svg class="ico big"><use href="#i-clock"/></svg><h3>Hábito, não evento</h3>
-      <p>Hábito nasce de uma ação pequena, repetida, com retorno imediato.<sup>7</sup><br>Dez minutos por semana, um gesto novo no expediente, reconhecimento na sexta.</p>
+      <p>Hábito nasce de uma ação pequena, repetida, com retorno imediato.<sup>7</sup><br>Quinze a vinte minutos por semana, um gesto novo no expediente, reconhecimento na sexta.</p>
       <p>E a dose certa de desafio, nem fácil demais nem impossível, é o que mantém a atenção.<br>No jogo e no trabalho.<sup>8</sup></p></article>
   </div>
   <div class="howto">
     <h3>Como funciona</h3>
     <ol class="steps-list">
-      <li><b>Todos participam</b>: advocacia, supervisão, financeiro, administrativo, Themis e sócios, cada um com as demandas da sua área.</li>
-      <li><b>Segunda</b>: o tema da semana chega no grupo, com o link da página e o desafio.</li>
-      <li><b>Durante a semana</b>: você joga quando quiser, em qualquer aparelho, e faz o desafio no seu próprio serviço. Para continuar de onde parou, use o mesmo aparelho e navegador: o progresso da trilha fica salvo aqui. Para realizar as tarefas no Claude, use sua conta corporativa (HTS ou Themis).</li>
-      <li><b>Sexta</b>: fechamento no grupo com a contagem da equipe e os relatos. Sem ranking de pessoas: o placar é de todos.</li>
+      <li><b>Todos participam</b>: advocacia, supervisão, financeiro, administrativo (inclusive o CSC), Themis e sócios, cada um com as demandas da sua área.</li>
+      <li><b>É meta da equipe</b>, definida pela direção.<br>Quem conclui cada semana fica registrado. E, no encontro de sexta, qualquer pessoa pode ser sorteada para mostrar o que aprendeu e já usa no trabalho.</li>
+      <li><b>Nova semana</b>: a página chega ao grupo na sexta, depois do encontro, com o desafio. Na segunda vem o lembrete.</li>
+      <li><b>Durante a semana</b>: você joga quando quiser, em qualquer aparelho, e faz o desafio no seu próprio serviço. Para continuar de onde parou, use o mesmo aparelho e navegador: as missões concluídas ficam salvas nele. Para realizar as tarefas no Claude, use sua conta corporativa (HTS ou Themis).</li>
+      <li><b>Sexta, das 11h às 12h</b>: encontro da trilha.<br>Duas pessoas são sorteadas para mostrar como usaram o Claude na semana, então vale chegar com um exemplo. Sem ranking de pessoas: o placar é de todos.</li>
       <li><b>Patentes</b>: Calouro, Ligeiro, Craque e Lenda da Trilha. São suas; você decide se posta.</li>
-      <li><b>Semana 4</b>: a trilha entrega a primeira contagem do indicador de IA do planejamento: skills compartilhadas pela equipe.</li>
+      <li><b>Semana 4</b>: contamos as skills que a equipe compartilhou, primeira medida da trilha para o objetivo de IA do planejamento.</li>
+      <li><b>Para ir além</b>: o curso gratuito <a href="https://anthropic.skilljar.com/claude-101" target="_blank" rel="noopener">Claude 101</a>, da Anthropic (a empresa que criou o Claude), acompanha a trilha. É em inglês; a tradução do navegador ajuda.</li>
     </ol>
   </div>
   <details class="refs"><summary>Referências</summary>
@@ -458,7 +486,7 @@ body.shake{animation:bodyshake .4s}
 <section id="personagem">
   <div class="eyebrow">Antes de entrar</div>
   <h2>Escolha seu personagem</h2>
-  <p class="sub">Todo mundo joga: advogados, estagiários, financeiro, administrativo, Themis e sócios.<br>O personagem caminha com você pelo mapa, aparece no placar e comemora cada missão.<br>As demandas da sua área valem mais no jogo.</p>
+  <p class="sub">Todo mundo joga: advogados, estagiários, supervisão, financeiro, administrativo, CSC, Themis e sócios.<br>O personagem caminha com você pelo mapa e comemora cada missão.<br>As demandas da sua área valem mais no jogo.</p>
   <div class="pick" id="pick">
     <button type="button" class="pc" data-p="1"><svg><use href="#pj-1"/></svg>Toga</button>
     <button type="button" class="pc" data-p="2"><svg><use href="#pj-2"/></svg>Pasta</button>
@@ -467,12 +495,12 @@ body.shake{animation:bodyshake .4s}
     <button type="button" class="pc" data-p="5"><svg><use href="#pj-5"/></svg>Óculos</button>
     <button type="button" class="pc" data-p="6"><svg><use href="#pj-6"/></svg>Prancheta</button>
   </div>
-  <div class="form-row"><label for="nome">Como quer ser chamado(a)?</label><input id="nome" type="text" maxlength="24" placeholder="seu nome ou apelido" autocomplete="off"></div>
+  <div class="form-row"><label for="nome">Seu nome, como a equipe te conhece</label><input id="nome" type="text" maxlength="40" placeholder="ex.: Ana Souza" autocomplete="name" autocapitalize="words" enterkeyhint="done"></div>
   <div class="form-row"><label>Sua área</label>
     <div class="chips" id="areas">
       <button type="button" data-a="Advocacia">Advocacia</button><button type="button" data-a="Supervisão">Supervisão</button><button type="button" data-a="Financeiro">Financeiro</button><button type="button" data-a="Administrativo">Administrativo</button><button type="button" data-a="Themis">Themis</button><button type="button" data-a="Sócios">Sócios</button>
     </div></div>
-  <div class="form-row"><label>Hoje você usa o Claude</label>
+  <div class="form-row"><label>Com que frequência você usa o Claude hoje?</label>
     <div class="chips" id="freq"><button type="button" data-f="todo dia">Todo dia</button><button type="button" data-f="algumas vezes por semana">Algumas vezes por semana</button><button type="button" data-f="raramente">Raramente</button><button type="button" data-f="ainda não">Ainda não</button></div></div>
   <div class="form-row"><button id="enter" class="primary" type="button">Entrar no escritório</button><span class="note" id="signNote"></span></div>
 </section>
@@ -499,7 +527,7 @@ body.shake{animation:bodyshake .4s}
 <section id="cena" class="locked">
   <div class="mhead"><div class="mnum" id="mn1">1</div><div><div class="eyebrow">Missão 1</div><h2>Conheça os quatro</h2></div><div class="mreward">+200 pts · medalha</div></div>
   <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Escolha o personagem e entre no escritório para começar. <button type="button" class="golock" data-go="personagem">Escolher personagem</button></div>
-  <p class="sub">Você pode parar e voltar quando quiser: o progresso fica salvo neste aparelho. Cena de um minuto. Toque num personagem para virar o cartão e ver o que ele faz melhor. Chegue ao fim para concluir a missão.</p>
+  <p class="sub">Você pode parar entre uma missão e outra: as missões concluídas ficam salvas neste aparelho. Cena de um minuto. Toque num modelo para virar o cartão e ver o que ele faz melhor. Chegue ao fim para concluir a missão.</p>
   <div class="ctrls">
     <button id="play" class="primary" type="button">Reproduzir</button>
     <button id="prev" type="button" aria-label="Quadro anterior">‹</button>
@@ -522,18 +550,18 @@ body.shake{animation:bodyshake .4s}
           <div class="face back"><b>Cruza documentos.</b>Parecer, contrato com cláusulas interligadas, consolidar gravação longa, planilha com várias fontes.<b>Para a tarefa pesada.</b></div></div></div>
         <div class="m" data-k="fable" tabindex="0"><div class="inner">
           <div class="face front"><span class="flipHint">virar</span><svg class="av"><use href="#av-fable"/></svg><div class="name">Fable</div><div class="role">o estrategista</div><div class="w"><i data-w="100"></i></div><div class="wl">peso 100</div></div>
-          <div class="face back"><b>O problema difícil.</b>Estratégia, cenário, trabalho longo que roda sozinho, e quando o Opus não deu conta.<b>Raro e combinado.</b></div></div></div>
+          <div class="face back"><b>O problema difícil.</b>Estratégia, cenário, trabalho longo que roda sozinho, e quando o Opus não deu conta.<b>Raro e combinado com quem coordena a sua área.</b></div></div></div>
       </div>
     </div>
     <div class="chip" id="chip"><svg class="ico"><use href="#i-doc"/></svg><span></span></div>
     <div class="warnbadge" id="warnbadge"><svg class="ico"><use href="#i-scale"/></svg>Evite: modelo pesado para tarefa leve</div>
   </div>
   <div class="caption" id="caption" aria-live="polite"></div>
-  <div class="beatnav"><span id="beatN">1 / 9</span><div class="dots" id="dots"></div><span>peso aproximado, pelos preços por uso de cada modelo</span></div>
+  <div class="beatnav"><span id="beatN">1 / 9</span><div class="dots" id="dots"></div><span>peso ilustrativo: quanto mais forte o modelo, mais consome do limite</span></div>
 </section>
 
 <section id="quiz" class="locked">
-  <div class="mhead"><div class="mnum" id="mn2">2</div><div><div class="eyebrow">Missão 2</div><h2>Quiz relâmpago</h2></div><div class="mreward">até 1.800 pts · medalha</div></div>
+  <div class="mhead"><div class="mnum" id="mn2">2</div><div><div class="eyebrow">Missão 2</div><h2>Quiz relâmpago</h2></div><div class="mreward">até 2.550 pts · medalha</div></div>
   <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 1 para liberar.</div>
   <p class="sub">Seis situações, vinte segundos cada. Quanto mais rápido acertar, mais pontos. Acertos seguidos dão bônus.</p>
   <div class="qwrap" id="qwrap">
@@ -550,7 +578,7 @@ body.shake{animation:bodyshake .4s}
 <section id="seletor" class="locked">
   <div class="mhead"><div class="mnum" id="mn3">3</div><div><div class="eyebrow">Missão 3</div><h2>Descreva uma tarefa sua</h2></div><div class="mreward">+150 pts</div></div>
   <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 2 para liberar.</div>
-  <p class="sub">Com suas palavras, uma tarefa real da sua semana. A sugestão segue a regra: comece pelo mais leve e suba se precisar.</p>
+  <p class="sub">Com suas palavras, uma tarefa real da sua semana. A sugestão segue a regra: comece pelo mais leve que dá conta e suba se precisar.</p>
   <textarea id="tarefa" placeholder="Ex.: preciso resumir uma decisão de 12 páginas para mandar ao cliente"></textarea>
   <div class="chips sel" id="chips">
     <button type="button"><svg class="ico"><use href="#i-spell"/></svg>Corrigir a ortografia de um e-mail</button>
@@ -558,7 +586,7 @@ body.shake{animation:bodyshake .4s}
     <button type="button"><svg class="ico"><use href="#i-hand"/></svg>Proposta pela skill da equipe</button>
     <button type="button"><svg class="ico"><use href="#i-scale"/></svg>Parecer cruzando três contratos e a lei</button>
     <button type="button"><svg class="ico"><use href="#i-mic"/></svg>Consolidar uma gravação de duas horas</button>
-    <button type="button"><svg class="ico"><use href="#i-chart"/></svg>Estratégia de um caso com 60 documentos</button>
+    <button type="button"><svg class="ico"><use href="#i-chart"/></svg>Caso com 60 documentos que o Opus não fechou</button>
   </div>
   <button id="sugerir" class="primary" type="button">Sugerir modelo</button>
   <div class="result" id="result" hidden>
@@ -570,7 +598,7 @@ body.shake{animation:bodyshake .4s}
 <section id="jogo" class="locked">
   <div class="mhead"><div class="mnum" id="mn4">4</div><div><div class="eyebrow">Missão 4</div><h2>Um dia de trabalho</h2></div><div class="mreward">meta 2.000 pts · medalhas</div></div>
   <div class="lockmsg"><svg class="ico"><use href="#i-lock"/></svg> Termine a missão 3 para liberar.</div>
-  <p class="sub">Três fases: manhã, tarde e plantão (é só a história do jogo; jogue na hora que quiser). Arraste cada demanda para o modelo certo. Acertos em sequência multiplicam; demandas da sua área e as de todos valem mais; as urgentes valem o dobro se forem a tempo. Demandas de outras áreas sempre entram: é assim que se aprende o que o colega faz.</p>
+  <p class="sub">Três fases: manhã, tarde e plantão (é só a história do jogo; jogue na hora que quiser). Arraste cada demanda para o modelo certo. Acertos em sequência multiplicam; demandas da sua área e as de todos valem mais; as urgentes valem o dobro se resolvidas a tempo. Demandas de outras áreas sempre entram: é assim que se aprende o que o colega faz. Para concluir a missão, acerte pelo menos 15 das 27 demandas.</p>
   <div class="roundbtn" id="startWrap"><button id="startDay" class="primary" type="button"><svg class="ico"><use href="#i-play"/></svg> Começar o dia</button></div>
   <div id="gameBody" hidden>
     <div class="gamehead">
@@ -589,7 +617,7 @@ body.shake{animation:bodyshake .4s}
       <span class="legend"><i class="dot urg"></i> urgente, dobro a tempo · <i class="dot mine"></i> da sua área ou de todos, vale mais · o baralho muda a cada dia jogado</span>
     </div>
     <div class="deck" id="deck"></div>
-    <div class="hudrow"><span>Acertos <b id="hits">0</b> / <b id="total">27</b></span><span>Restam na fase <b id="left">9</b></span><span>Sem desperdício <b id="clean">0</b></span><label class="toggle" style="margin-left:auto"><input type="checkbox" id="sfx" checked> Sons</label><label class="toggle"><input type="checkbox" id="music"> Música</label></div>
+    <div class="hudrow"><span>Acertos <b id="hits">0</b> / <b id="total">27</b></span><span>Restam na fase <b id="left">9</b></span><span>Sem dica <b id="clean">0</b></span><label class="toggle" style="margin-left:auto"><input type="checkbox" id="sfx" checked> Sons</label><label class="toggle"><input type="checkbox" id="music"> Música</label></div>
     <div class="fb" id="fb"></div>
     <div class="stars-row" id="roundStars"></div>
     <div class="roundbtn"><button id="nextRound" class="primary" type="button" hidden>Começar a tarde</button></div>
@@ -606,14 +634,19 @@ body.shake{animation:bodyshake .4s}
     <div>
       <b>Uma semana escolhendo o modelo antes de pedir.</b>
       <ol>
-        <li>Em cada chat novo desta semana, antes de escrever, pergunte: isto é tarefa de estagiário, pleno, sênior ou estrategista?</li>
-        <li>Resolva ao menos uma tarefa do seu dia no Haiku ou no Sonnet que você normalmente faria num modelo maior.</li>
-        <li>Conte no grupo, em uma linha, qual foi a tarefa e quanto tempo levou.</li>
+        <li>Em cada chat novo desta semana, antes de escrever, pergunte-se: isto é tarefa de estagiário, pleno, sênior ou estrategista?</li>
+        <li>Resolva no Haiku ou no Sonnet ao menos uma tarefa do seu dia que você normalmente faria num modelo maior.</li>
+        <li>Conte no grupo, em uma linha, qual foi a tarefa e quanto tempo levou, sem nome de cliente nem dado de processo.</li>
       </ol>
       <label class="chk" id="chkLab"><input type="checkbox" id="chk"> Fiz o desafio desta semana</label>
       <div class="roundbtn"><button id="shareMission" type="button">Copiar a linha para o grupo</button><button id="shareAll" type="button">Copiar meu resultado da semana</button></div>
       <p class="note" id="saveNote"></p>
     </div>
+  </div>
+  <div class="alem">
+    <h3>Para ir além</h3>
+    <p>Fechou a semana? O <b>Claude 101</b> é o curso gratuito da própria Anthropic sobre o uso do Claude no trabalho do dia a dia, em aulas curtas.<br><span class="note">Em inglês (a tradução do navegador ajuda). O site pede um cadastro gratuito.</span></p>
+    <a class="linkbtn" href="https://anthropic.skilljar.com/claude-101" target="_blank" rel="noopener"><svg class="ico"><use href="#i-play"/></svg>Abrir o Claude 101</a>
   </div>
 </section>
 
@@ -638,6 +671,7 @@ body.shake{animation:bodyshake .4s}
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var names=['haiku','sonnet','opus','fable'], label={haiku:'Haiku',sonnet:'Sonnet',opus:'Opus',fable:'Fable'}, weight={haiku:1,sonnet:20,opus:40,fable:100};
   function fmt(n){ return (n||0).toLocaleString('pt-BR'); }
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
   function toast(t){var el=$('toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on')},2400)}
   function flash(kind){ if(reduce) return; var f=$('flash'); f.className='flash'; void f.offsetWidth; f.classList.add(kind); }
   function shakeBody(){ if(reduce) return; document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake'); setTimeout(function(){document.body.classList.remove('shake')},450); }
@@ -672,15 +706,16 @@ body.shake{animation:bodyshake .4s}
   /* ---------- estado da semana (progresso, pontos, medalhas) ---------- */
   var W='hts-s1-';
   var G={freq:store.get(W+'freq')||'', pts:+(store.get(W+'pts')||0), done:JSON.parse(store.get(W+'done')||'{}'), med:JSON.parse(store.get(W+'med')||'{}'), pj:store.get(W+'pj')||'', nome:store.get(W+'nome')||'', area:store.get(W+'area')||'', entered:store.get(W+'in')==='1'};
+  (function(){ var sq=store.get(W+'snapQ'), sd=store.get(W+'snapD'); if(sq!==null&&!G.done.quiz) G.pts=+sq||0; if(sd!==null&&!G.done.jogo) G.pts=+sd||0; store.del(W+'snapQ'); store.del(W+'snapD'); store.set(W+'pts',String(G.pts)); })();
   function saveG(){ store.set(W+'pts',String(G.pts)); store.set(W+'done',JSON.stringify(G.done)); store.set(W+'med',JSON.stringify(G.med)); }
-  var LV=[{n:'Calouro',at:0},{n:'Ligeiro',at:1200},{n:'Craque',at:2600},{n:'Lenda da Trilha',at:4200}];
+  var LV=[{n:'Calouro',at:0},{n:'Ligeiro',at:2500},{n:'Craque',at:6000},{n:'Lenda da Trilha',at:12000}];
   function lvl(){ var L=LV[0]; LV.forEach(function(l){ if(G.pts>=l.at) L=l; }); return L; }
   var MEDALS=[
     {id:'curioso',n:'Curioso',d:'Viu a cena até o fim',i:'i-play'},
     {id:'reflexo',n:'Reflexo',d:'4 ou mais no quiz',i:'i-bolt'},
     {id:'certeiro',n:'Certeiro',d:'6 de 6 no quiz',i:'i-star'},
     {id:'tradutor',n:'Tradutor',d:'Descreveu uma tarefa sua',i:'i-spell'},
-    {id:'combo5',n:'Combo ×5',d:'Cinco acertos seguidos',i:'i-bulb'},
+    {id:'combo5',n:'Combo ×5',d:'Oito acertos seguidos',i:'i-bulb'},
     {id:'clean',n:'Sem desperdício',d:'Uma fase sem modelo pesado à toa',i:'i-check'},
     {id:'urgent',n:'Urgência atendida',d:'Duas urgentes a tempo',i:'i-clock'},
     {id:'econ',n:'Economista',d:'Consumo perto do ideal no dia',i:'i-calc'},
@@ -690,7 +725,7 @@ body.shake{animation:bodyshake .4s}
   function drawMedals(){ var m=$('medals'); m.innerHTML=''; MEDALS.forEach(function(x){ var d=document.createElement('div'); d.className='medal'+(G.med[x.id]?' won':''); d.innerHTML='<div class="ring"><svg class="ico"><use href="#'+x.i+'"/></svg></div><b>'+x.n+'</b><br>'+x.d; m.appendChild(d); });
     var hm=$('hudMed'); hm.innerHTML=MEDALS.map(function(x){return '<i class="'+(G.med[x.id]?'on':'')+'"></i>'}).join(''); }
   function award(id){ if(G.med[id]) return; G.med[id]=true; saveG(); drawMedals(); var x=MEDALS.filter(function(m){return m.id===id})[0]; sfx('big'); toast('Medalha: '+x.n); confetti(50,1200); }
-  function addPts(n,x,y){ if(!n) return; var prev=lvl(); G.pts=Math.max(0,G.pts+n); saveG(); if(x!=null) floatPts(x,y,(n>0?'+':'−')+fmt(Math.abs(n)),n<0); renderHud(); var L=lvl(); if(L!==prev&&n>0){ var box=document.createElement('div'); box.className='lvup'; box.innerHTML='<svg><use href="#pj-'+(G.pj||1)+'"/></svg><div class="t">'+(G.nome?G.nome+', agora':'Agora')+' você é '+L.n+'</div><p>'+fmt(G.pts)+' pontos</p>'; document.body.appendChild(box); sfx('big'); confetti(80,1600); speak('Agora você é '+L.n); setTimeout(function(){box.remove()},1900); } }
+  function addPts(n,x,y){ if(!n) return; var prev=lvl(); G.pts=Math.max(0,G.pts+n); saveG(); if(x!=null) floatPts(x,y,(n>0?'+':'−')+fmt(Math.abs(n)),n<0); renderHud(); var L=lvl(); if(L!==prev&&n>0){ var box=document.createElement('div'); box.className='lvup'; box.innerHTML='<svg><use href="#pj-'+(G.pj||1)+'"/></svg><div class="t">'+(G.nome?esc(G.nome)+', nova patente: ':'Nova patente: ')+L.n+'</div><p>'+fmt(G.pts)+' pontos</p>'; document.body.appendChild(box); sfx('big'); confetti(80,1600); speak('Nova patente: '+L.n); setTimeout(function(){box.remove()},1900); } }
   function renderHud(){ $('hudPts').textContent=fmt(G.pts); $('hudLv').textContent=lvl().n; $('hudAv').querySelector('use').setAttribute('href','#pj-'+(G.pj||1)); $('pts').textContent=fmt(G.pts); var L=lvl(), ni=LV.indexOf(L)+1, nx=LV[ni]; $('lv').textContent=L.n; $('xp').textContent=nx?(fmt(G.pts)+' / '+fmt(nx.at)+' para '+nx.n):'patente máxima'; $('xpbar').style.width=(nx?Math.min(100,100*(G.pts-L.at)/(nx.at-L.at)):100)+'%'; }
   $('hud').classList.toggle('on',G.entered);
   function gate(id){ var sec=$(id); if(!sec.classList.contains('locked')) return true; if(!G.entered){ toast('Primeiro escolha o personagem e entre no escritório.'); $('personagem').scrollIntoView({behavior:'smooth',block:'start'}); } else toast('Termine a missão anterior para liberar esta.'); sfx('tick'); return false; }
@@ -712,7 +747,7 @@ body.shake{animation:bodyshake .4s}
     drawMedals(); }
   function walkTo(f){ var av=$('heroAv'), from=av._f||pos[0], t0=null, dur=reduce?1:1500; av.classList.add('walk'); sfx('step');
     (function step(ts){ if(!t0) t0=ts; var k=Math.min(1,(ts-t0)/dur); var e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; var q=pt(from+(f-from)*e); av.style.left=q.x+'%'; av.style.top=q.y+'%'; if(k<1) requestAnimationFrame(step); else { av._f=f; av.classList.remove('walk'); av.classList.add('cheer'); setTimeout(function(){av.classList.remove('cheer')},1300); } })(performance.now()); }
-  var STORY={0:'<b>Primeiro dia.</b> O escritório está cheio de demandas, a assinatura do Claude é de todos, e quatro modelos esperam ordens.<br>Sua missão desta semana: aprender a passar cada tarefa a quem faz melhor.',1:'<b>Missão 1 cumprida.</b> Agora você sabe quem é quem.<br>Próxima parada: o quiz relâmpago, para ver se a escolha já saiu automática.',2:'<b>Reflexo testado.</b><br>Antes de entrar no dia cheio, descreva uma tarefa sua de verdade e veja o modelo que ela pede.',3:'<b>Tarefa traduzida.</b> O escritório abriu as portas.<br>Um dia inteiro de demandas espera por você, em três fases.',4:'<b>Dia vencido.</b> Falta o que importa: levar isso para a sua semana real.<br>O desafio fecha a missão e registra sua conclusão.',5:'<b>Semana 1 concluída.</b> Sua patente está no placar.<br>Segunda-feira chega a semana 2 no grupo.'};
+  var STORY={0:'<b>Primeiro dia.</b> O escritório está cheio de demandas, a assinatura do Claude é de todos, e quatro modelos esperam ordens.<br>Sua missão desta semana: aprender a passar cada tarefa a quem faz melhor.',1:'<b>Missão 1 cumprida.</b> Agora você sabe quem é quem.<br>Próxima parada: o quiz relâmpago, para ver se a escolha já saiu automática.',2:'<b>Reflexo testado.</b><br>Antes de entrar no dia cheio, descreva uma tarefa sua de verdade e veja o modelo que ela pede.',3:'<b>Tarefa traduzida.</b> O escritório abriu as portas.<br>Um dia inteiro de demandas espera por você, em três fases.',4:'<b>Dia concluído.</b> Falta o que importa: levar isso para a sua semana real.<br>O desafio fecha a semana e registra sua conclusão.',5:'<b>Semana 1 concluída.</b> Sua conclusão entrou na contagem da equipe.<br>Na sexta, depois do encontro, a semana 2 chega ao grupo.'};
   function completeMission(id,points){ if(G.done[id]) return; G.done[id]=true; saveG(); var i=MIS.map(function(m){return m.id}).indexOf(id); banner('Missão '+(i+1)+' concluída', MIS[i].n); sfx('big'); confetti(90,1800);
     if(points) addPts(points); drawMap(); var nxt=Math.min(i+1,4); walkTo(pos[nxt]); $('storyTxt').innerHTML=STORY[i+1]; if(i<4){ setTimeout(function(){ toast('Missão '+(i+2)+' liberada: '+MIS[i+1].n); },1700); } saveResult(); savePresence(); }
 
@@ -726,8 +761,8 @@ body.shake{animation:bodyshake .4s}
   Array.prototype.forEach.call($('areas').children,function(bt){ bt.classList.toggle('on',bt.getAttribute('data-a')===G.area); bt.addEventListener('click',function(){ G.area=this.getAttribute('data-a'); store.set(W+'area',G.area); Array.prototype.forEach.call($('areas').children,function(x){x.classList.toggle('on',x===bt)}); sfx('tick'); }); });
   Array.prototype.forEach.call($('freq').children,function(bt){ bt.classList.toggle('on',bt.getAttribute('data-f')===G.freq); bt.addEventListener('click',function(){ G.freq=this.getAttribute('data-f'); store.set(W+'freq',G.freq); Array.prototype.forEach.call($('freq').children,function(x){x.classList.toggle('on',x===bt)}); sfx('tick'); }); });
   Array.prototype.forEach.call($('pick').children,function(bt){ bt.classList.toggle('on',bt.getAttribute('data-p')===G.pj); bt.addEventListener('click',function(){ G.pj=this.getAttribute('data-p'); store.set(W+'pj',G.pj); Array.prototype.forEach.call($('pick').children,function(x){x.classList.toggle('on',x===bt)}); sfx('step'); renderHud(); drawMap(); }); });
-  $('enter').addEventListener('click',function(){ if(!G.pj){toast('Escolha um personagem.');return} if(!G.area){toast('Escolha a sua área.');return} G.nome=$('nome').value.trim(); store.set(W+'nome',G.nome); G.entered=true; store.set(W+'in','1');
-    $('hud').classList.add('on'); drawMap(); savePresence(); banner('Bem-vindo'+(G.nome?', '+G.nome:''),'semana 1 · qual modelo eu uso'); sfx('big'); confetti(60,1400); speak('Bem-vindo'+(G.nome?', '+G.nome:'')+'. Primeira missão: conheça os quatro.'); setTimeout(function(){ $('mapa').scrollIntoView({behavior:'smooth',block:'start'}); },600); });
+  $('enter').addEventListener('click',function(){ if(!G.pj){toast('Escolha um personagem.');return} if(!G.area){toast('Escolha a sua área.');return} var nm=$('nome').value.replace(/\s+/g,' ').trim(); if(nm.length<2){ toast('Escreva seu nome: é ele que registra quem fez.'); $('nome').focus(); return; } G.nome=nm; store.set(W+'nome',G.nome); G.entered=true; store.set(W+'in','1');
+    $('hud').classList.add('on'); drawMap(); savePresence(); banner('Boas-vindas'+(G.nome?', '+esc(G.nome):''),'semana 1 · qual modelo eu uso?'); sfx('big'); confetti(60,1400); speak('Boas-vindas'+(G.nome?', '+G.nome:'')+'. Primeira missão: conheça os quatro.'); setTimeout(function(){ $('mapa').scrollIntoView({behavior:'smooth',block:'start'}); },600); });
 
   /* ---------- missão 1: cena ---------- */
   var beats=[
@@ -737,8 +772,8 @@ body.shake{animation:bodyshake .4s}
     {t:'Um resumo de decisão em linguagem simples para o cliente. <b>Sonnet</b>, o pleno do dia a dia, é o ponto de partida para produzir texto.', fill:24, lit:['sonnet'], dim:['haiku','opus','fable'], task:'Resumo de decisão para o cliente', icon:'i-doc', to:'sonnet'},
     {t:'Um parecer que cruza três contratos com a lei. Aqui entra <b>Opus</b>, o sênior, que lê vários documentos de uma vez e liga as pontas.', fill:36, lit:['opus'], dim:['haiku','sonnet','fable'], task:'Parecer com três contratos e a lei', icon:'i-scale', to:'opus'},
     {t:'A estratégia de um caso complexo, com dezenas de documentos e várias rodadas. <b>Fable</b>, o estrategista: o mais fundo, e o que mais consome.', fill:60, lit:['fable'], dim:['haiku','sonnet','opus'], task:'Estratégia de um caso com 60 documentos', icon:'i-chart', to:'fable', hot:true},
-    {t:'<b>Atenção:</b> isto não é o caminho. Uma tarefa leve foi para o modelo mais pesado. O resultado é o mesmo, com <b>cem vezes o consumo</b>. Se virar hábito, a assinatura aperta para todos antes do fim do dia.', fill:86, lit:['fable'], dim:['haiku','sonnet','opus'], task:'Separar as publicações do dia', icon:'i-mail', to:'fable', hot:true, warn:true},
-    {t:'A regra simples: <b>comece pelo mais leve</b>.<br>Se a resposta não servir, suba um degrau. Quase nunca é preciso começar pelo topo.', fill:30, lit:['haiku','sonnet'], dim:['fable']},
+    {t:'<b>Atenção:</b> isto não é o caminho. Uma tarefa leve foi para o modelo mais pesado. O resultado é o mesmo, com <b>muito mais consumo</b>. Se virar hábito, a assinatura aperta para todos antes do fim do dia.', fill:86, lit:['fable'], dim:['haiku','sonnet','opus'], task:'Separar as publicações do dia', icon:'i-mail', to:'fable', hot:true, warn:true},
+    {t:'A regra simples: <b>comece pelo mais leve que dá conta</b>.<br>Se a resposta não servir, suba um degrau. Quase nunca é preciso começar pelo topo.', fill:30, lit:['haiku','sonnet'], dim:['fable']},
     {t:'Em qualquer modelo, o que sai é rascunho até você conferir.<br>Missão cumprida: siga para o quiz relâmpago.', fill:30, lit:[], dim:[]}
   ];
   var b=0, timer=null, playing=false, STEP=8500; var dots=$('dots'); beats.forEach(function(){dots.appendChild(document.createElement('i'))});
@@ -767,32 +802,35 @@ body.shake{animation:bodyshake .4s}
     {s:'Chegaram 40 publicações. Você precisa separar o que tem prazo do que é só ciência.',o:['Haiku','Sonnet','Opus','Fable'],a:0,e:'Classificar é tarefa leve e repetida. O prazo em si, confira no Astrea.'},
     {s:'Comparar três orçamentos de fornecedor e escrever a recomendação para a diretoria.',o:['Haiku','Sonnet','Opus','Fable'],a:1,e:'Poucos dados e um texto curto: produção do dia a dia, o pleno resolve.'},
     {s:'Um parecer que cruza três contratos de RPPS com a legislação e aponta riscos.',o:['Haiku','Sonnet','Opus','Fable'],a:2,e:'Vários documentos e raciocínio encadeado pedem o sênior. A revisão de sempre continua.'},
-    {s:'Chegaram 30 e-mails no financeiro. Separar por assunto: nota, cobrança, contabilidade.',o:['Haiku','Sonnet','Opus','Fable'],a:0,e:'Triagem em volume: leve e repetida. Haiku.'},
+    {s:'Chegaram 30 e-mails ao financeiro. Separar por assunto: nota, cobrança, contabilidade.',o:['Haiku','Sonnet','Opus','Fable'],a:0,e:'Triagem em volume: leve e repetida. Haiku.'},
     {s:'O resumo do Sonnet veio raso para um caso com várias decisões interligadas. O que fazer?',o:['Mandar assim mesmo','Ir direto ao Fable','Subir um degrau: Opus','Repetir no Haiku'],a:2,e:'Subir um degrau de cada vez. O Fable fica para quando o Opus não der conta.'},
-    {s:'Simular um acordo de precatório com deságio, prazo, custo do capital e vários cenários, em rodadas.',o:['Haiku','Sonnet','Opus','Fable'],a:3,e:'Muitas variáveis e idas e vindas: o Fable, de forma combinada, depois de tentar o Opus. O cálculo final é de quem fecha.'}
+    {s:'O Opus já tentou e não fechou: simular um acordo de precatório com deságio, prazo, custo do capital e vários cenários, em rodadas.',o:['Haiku','Sonnet','Opus','Fable'],a:3,e:'O Opus não deu conta: agora é a vez do Fable, com uso combinado. O cálculo final é de quem fecha.'}
   ];
   var qi=0, qT=null, qLeft=20, qStreak=0, qHits=0, qPts=0, qLock=false;
   var SHAPES=['<svg class="shape" viewBox="0 0 24 24"><path d="M12 3l9 18H3z" fill="#fff"/></svg>','<svg class="shape" viewBox="0 0 24 24"><path d="M12 2l10 10-10 10L2 12z" fill="#fff"/></svg>','<svg class="shape" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#fff"/></svg>','<svg class="shape" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" fill="#fff"/></svg>'];
   function qShow(){ var q=Q[qi]; $('qn').textContent=(qi+1)+' / '+Q.length; $('qstem').textContent=q.s; var g=$('qgrid'); g.innerHTML=''; q.o.forEach(function(o,k){ var bt=document.createElement('button'); bt.type='button'; bt.className='qopt c'+k; bt.style.setProperty('--k',k); bt.innerHTML=SHAPES[k]+'<span>'+o+'</span>'; bt.addEventListener('click',function(){ qAnswer(k,bt); }); g.appendChild(bt); });
     qLeft=20; qLock=false; $('qsec').textContent=qLeft; $('qbar').style.transform='scaleX(1)'; clearInterval(qT); sfx('tick');
-    qT=setInterval(function(){ qLeft-=0.1; if(qLeft<=0){ qLeft=0; clearInterval(qT); qAnswer(-1,null); } $('qsec').textContent=Math.ceil(qLeft); $('qbar').style.transform='scaleX('+(qLeft/20)+')'; },100); }
+    qTick(); }
+  function qTick(){ clearInterval(qT); qT=setInterval(function(){ qLeft-=0.1; if(qLeft<=0){ qLeft=0; clearInterval(qT); qAnswer(-1,null); } $('qsec').textContent=Math.ceil(qLeft); $('qbar').style.transform='scaleX('+(qLeft/20)+')'; },100); }
+  var qPaused=false, practiceQ=false;
+  document.addEventListener('visibilitychange',function(){ if(document.hidden){ if(qT&&!qLock&&!$('qlive').hidden){ clearInterval(qT); qT=null; qPaused=true; } } else if(qPaused){ qPaused=false; if(!qLock) qTick(); } });
   function qAnswer(k,bt){ if(qLock) return; qLock=true; clearInterval(qT); var q=Q[qi], ok=k===q.a; var opts=$('qgrid').children; for(var i=0;i<opts.length;i++){ opts[i].disabled=true; if(i===q.a) opts[i].classList.add('right'); else if(i===k) opts[i].classList.add('wrong'); }
-    var gain=0; if(ok){ qHits++; qStreak++; gain=Math.round(300*(0.5+0.5*qLeft/20))+(qStreak>1?50*(qStreak-1):0); qPts+=gain; addPts(gain); flash('ok'); sfx('ok'); if(bt){ var r=bt.getBoundingClientRect(); sparks(r.left+r.width/2,r.top); } } else { qStreak=0; flash('bad'); sfx('bad'); shakeBody(); }
+    var gain=0; if(ok){ qHits++; qStreak++; gain=Math.round(300*(0.5+0.5*qLeft/20))+(qStreak>1?50*(qStreak-1):0); qPts+=gain; if(!practiceQ) addPts(gain); flash('ok'); sfx('ok'); if(bt){ var r=bt.getBoundingClientRect(); sparks(r.left+r.width/2,r.top); } } else { qStreak=0; flash('bad'); sfx('bad'); shakeBody(); }
     $('qstreak').textContent=qStreak>1?'sequência ×'+qStreak:'';
     var fb=document.createElement('div'); fb.className='qfb'+(ok?'':' bad'); fb.innerHTML='<div><div class="big">'+(ok?(qLeft>14?'Rápido e certo!':'Correto!'):(k<0?'Tempo esgotado':'Não foi dessa vez'))+'</div>'+(ok?'<div class="pts">+'+fmt(gain)+'</div>':'')+'<p>'+q.e+'</p></div>'; $('qwrap').appendChild(fb); speak((ok?'Correto. ':'Não foi dessa vez. ')+q.e);
     setTimeout(function(){ fb.remove(); qi++; if(qi<Q.length) qShow(); else qEnd(); },2200); }
   function qEnd(){ $('qlive').hidden=true; var e=$('qend'); e.hidden=false; var msg=qHits===Q.length?'Perfeito. Nenhuma dúvida sobre quem faz o quê.':(qHits>=4?'Boa. A escolha já está quase automática.':'Vale rever a cena antes do dia de trabalho.');
     e.innerHTML='<div class="big">'+qHits+' de '+Q.length+' · +'+fmt(qPts)+' pontos</div><p>'+msg+'</p><div class="roundbtn" style="justify-content:center"><button type="button" id="qagain">Jogar de novo</button></div>';
-    if(qHits>=4) award('reflexo'); if(qHits===Q.length) award('certeiro'); completeMission('quiz',0); sfx('big');
-    $('qagain').addEventListener('click',function(){ qi=0;qStreak=0;qHits=0;qPts=0; e.hidden=true; $('qlive').hidden=false; qShow(); }); }
-  $('qgo').addEventListener('click',function(){ if(!gate('quiz')) return; $('qstart').hidden=true; $('qlive').hidden=false; banner('Quiz relâmpago','seis situações, vinte segundos'); setTimeout(qShow,900); });
+    if(qHits>=4) award('reflexo'); if(qHits===Q.length) award('certeiro'); completeMission('quiz',0); store.del(W+'snapQ'); if(practiceQ) e.querySelector('p').textContent+=' Rodada de treino: os pontos já contaram na primeira vez.'; sfx('big');
+    $('qagain').addEventListener('click',function(){ practiceQ=!!G.done.quiz; qi=0;qStreak=0;qHits=0;qPts=0; e.hidden=true; $('qlive').hidden=false; qShow(); }); }
+  $('qgo').addEventListener('click',function(){ if(!gate('quiz')) return; practiceQ=!!G.done.quiz; if(!practiceQ) store.set(W+'snapQ',String(G.pts)); $('qstart').hidden=true; $('qlive').hidden=false; banner('Quiz relâmpago','seis situações, vinte segundos'); setTimeout(qShow,900); });
 
   /* ---------- missão 3: seletor ---------- */
   var info={haiku:{why:'Tarefa curta e objetiva: classificar, extrair, corrigir ou responder algo pontual. O modelo mais leve resolve e quase não gasta a assinatura.',up:'Se a resposta vier rasa, suba para o Sonnet.'},
     sonnet:{why:'Tarefa de produção do dia a dia: redigir, resumir, revisar ou montar um documento a partir de um modelo. É o padrão do grupo.',up:'Se precisar cruzar vários documentos ou raciocinar mais fundo, suba para o Opus.'},
-    opus:{why:'Tarefa que cruza fontes ou pede raciocínio mais longo: parecer, contrato com cláusulas interligadas, consolidação de gravação, análise com planilha.',up:'Se mesmo assim faltar profundidade, ou a tarefa tiver muitos passos encadeados, combine o uso do Fable.'},
+    opus:{why:'Tarefa que cruza fontes ou pede raciocínio mais longo: parecer, contrato com cláusulas interligadas, consolidação de gravação, análise com planilha.',up:'Se mesmo assim faltar profundidade, ou a tarefa tiver muitos passos encadeados, combine o uso do Fable com quem coordena a sua área.'},
     fable:{why:'Problema difícil ou trabalho longo que roda sozinho: estratégia, cenário, tarefa de muitos passos. Pesa para todos, então o uso é combinado e raro.',up:'Antes de usar, tente o Opus: na maior parte das vezes ele dá conta.'}};
-  var rules=[[/ortograf|gramátic|corrig|revis(ar|e|ão) (o |um |a )?(e-?mail|texto curto)|traduz|classific|triag|extra(ir|ia)|liste|listar|o que significa|dúvida (rápida|simples)|resumo curto|resumir (um |o )?(e-?mail|parágrafo|publica)/i,'haiku',3],[/publica(ç|c)(ão|ões)|planilha simples|tabela simples|datas? e valores|valores e datas|campos|conferir se/i,'haiku',2],[/rascunho|e-?mail|petição|peça|resum|ata|proposta|mensagem|relat[óo]rio|revis|minuta|comunicad|apresenta[çc][ãa]o curta|roteiro/i,'sonnet',3],[/decis[ãa]o|senten[çc]a|ac[óo]rd[ãa]o|cliente|contrato/i,'sonnet',1],[/parecer|cruz|v[áa]rios|tr[êe]s|quatro|cinco|cl[áa]usulas|consolid|grava[çc][ãa]o|transcri[çc][ãa]o|longa|longo|duas horas|an[áa]lise|comparar|skill|projeto|apresenta[çc][ãa]o completa|planilha.*(cruz|v[áa]rias|fontes)|due diligence|auditoria|precat[óo]rio inteiro/i,'opus',3],[/p[áa]ginas|inteiro|completo|todos os|processo inteiro|complexo/i,'opus',1],[/estrat[ée]gi|cen[áa]rio|2027|planejamento|muitos passos|automatiz|rodar sozinho|opus n[ãa]o|n[ãa]o deu conta|pesquisa profunda|modelo financeiro|or[çc]amento anual|60 documentos|v[áa]rias rodadas/i,'fable',3]];
+  var rules=[[/ortograf|gramátic|corrig|revis(ar|e|ão) (o |um |a )?(e-?mail|texto curto)|traduz|classific|triag|extra(ir|ia)|liste|listar|o que significa|o que é|dúvida (rápida|simples)|resumo curto|resumir (um |o )?(e-?mail|parágrafo|publica)|separ(ar|e) .{0,40}por/i,'haiku',4],[/publica(ç|c)(ão|ões)|planilha simples|tabela simples|datas? e valores|valores e datas|campos|conferir se|vencimento|parcelas|lista de/i,'haiku',2],[/rascunho|e-?mail|petição|peça|resum|\bata\b|proposta|mensagem|relat[óo]rio|revis|minuta|comunicad|apresenta[çc][ãa]o curta|roteiro/i,'sonnet',3],[/decis[ãa]o|senten[çc]a|ac[óo]rd[ãa]o|cliente|contrato/i,'sonnet',1],[/parecer|cruz|\btese\b|v[áa]rios|cl[áa]usulas|consolid|grava[çc][ãa]o|transcri[çc][ãa]o|longa|longo|duas horas|an[áa]lis|skill|projeto|apresenta[çc][ãa]o completa|planilha.*(cruz|v[áa]rias|fontes)|due diligence|auditoria|precat[óo]rio inteiro/i,'opus',3],[/contra os documentos|anexos|hist[óo]rico|dependem|diferen[çc]as|escopos|crit[ée]rios/i,'opus',2],[/p[áa]ginas|inteiro|completo|todos os|processo inteiro|complexo/i,'opus',1],[/estrat[ée]gi|cen[áa]rio|2027|planejamento|muitos passos|automatiz|rodar sozinho|pesquisa profunda|modelo financeiro|or[çc]amento anual|60 documentos|v[áa]rias rodadas/i,'fable',3],[/opus n[ãa]o|n[ãa]o deu conta|n[ãa]o bastou|n[ãa]o fechou/i,'fable',5]];
   function suggest(txt){ var s={haiku:0,sonnet:0.5,opus:0,fable:0}; rules.forEach(function(r){ if(r[0].test(txt)) s[r[1]]+=r[2]; }); if(txt.split(/\s+/).length>40) s.opus+=1; var best='sonnet',max=-1; names.forEach(function(k){ if(s[k]>max){max=s[k];best=k} }); if(best==='fable'&&s.opus===0&&s.fable<4) best='opus'; return best; }
   function showPick(){ if(!gate('seletor')) return; var txt=$('tarefa').value.trim(); if(!txt){toast('Descreva a tarefa primeiro.');return} var k=suggest(txt), r=info[k]; $('resAv').querySelector('use').setAttribute('href','#av-'+k); $('pickn').textContent='Use o '+label[k]; $('why').textContent=r.why; $('up').textContent=r.up; $('result').hidden=false;
     var Ld=$('ladder').children, idx=names.indexOf(k); for(var i=0;i<4;i++) Ld[i].classList.toggle('on',i<=idx); sfx('ok'); speak('Use o '+label[k]+'. '+r.why); if(!G.done.seletor){ award('tradutor'); completeMission('seletor',150); } }
@@ -803,10 +841,10 @@ body.shake{animation:bodyshake .4s}
   var POOL=[
     {r:'Supervisão',t:'Separar as publicações do dia: prazo, ciência ou arquivo',k:'haiku',i:'i-mail',h:'Classificar, não redigir.',e:'Classificar é tarefa leve e repetida. O prazo em si, confira no Astrea.'},
     {r:'Todos',t:'Corrigir o português de um e-mail antes de enviar',k:'haiku',i:'i-spell',h:'Uma correção pontual.',e:'Correção pontual: o mais leve resolve e quase não consome.'},
-    {r:'Financeiro',t:'Tirar valor, vencimento e parcelas de um contrato para a planilha de contas a receber',k:'haiku',i:'i-calc',h:'Extrair dados de um documento só.',e:'Extração simples de um documento: trabalho de estagiário rápido.'},
+    {r:'Financeiro',t:'Tirar valor, vencimento e parcelas de um contrato para a planilha de contas a receber',k:'haiku',i:'i-calc',h:'Extrair dados de um documento só.',e:'Extração simples de um documento: trabalho para o Haiku.'},
     {r:'Financeiro',t:'Separar os e-mails do financeiro por assunto: nota, cobrança, contabilidade',k:'haiku',i:'i-mail',h:'Triagem em volume.',e:'Triagem em volume: leve e repetida.'},
     {r:'Advocacia',t:'Listar os documentos que um despacho pede para juntar',k:'haiku',i:'i-folder',h:'Só listar o que está escrito.',e:'Extrair uma lista de um texto curto: tarefa leve.'},
-    {r:'Themis',t:'Conferir se um ofício requisitório traz CNPJ, valor e data certos',k:'haiku',i:'i-check',h:'Checar campos, não analisar.',e:'Conferência de campos num documento só: Haiku.'},
+    {r:'Themis',t:'Conferir se um ofício requisitório traz CNPJ, valor e data preenchidos',k:'haiku',i:'i-check',h:'Checar campos, não analisar.',e:'Conferência de campos num documento só: Haiku.'},
     {r:'Todos',t:'Explicar para um estagiário novo o que é RPV',k:'haiku',i:'i-bulb',h:'Dúvida pontual.',e:'Dúvida simples, resposta curta: Haiku.'},
     {r:'Advocacia',t:'Resumir uma decisão de 15 páginas em linguagem simples para o cliente',k:'sonnet',i:'i-doc',h:'Redigir com tom adequado.',e:'Resumir e adaptar o tom é produção do dia a dia.'},
     {r:'Advocacia',t:'Montar a proposta de um caso novo pela skill de proposta da equipe',k:'sonnet',i:'i-hand',h:'A skill já traz o padrão.',e:'A skill já carrega o padrão; o modelo só preenche e ajusta.'},
@@ -825,23 +863,23 @@ body.shake{animation:bodyshake .4s}
     {r:'Themis',t:'Resumir um processo de precatório inteiro: origem, fases, valores e riscos',k:'opus',i:'i-folder',h:'Processo inteiro, várias fases.',e:'Leitura longa com síntese estruturada: Opus.'},
     {r:'Supervisão',t:'Relatório mensal de valores a receber a partir dos casos acompanhados',k:'opus',i:'i-chart',h:'Vários casos, um relatório.',e:'Consolidar vários casos num relatório: Opus, com os valores conferidos no tribunal.'},
     {r:'Sócios',t:'Analisar a proposta de um cliente grande com contrato, anexos e histórico de e-mails',k:'opus',i:'i-folder',h:'Vários documentos e um histórico.',e:'Contrato, anexos e histórico juntos: Opus.'},
-    {r:'Advocacia',t:'Estratégia de um caso complexo com 60 documentos, em várias rodadas',k:'fable',i:'i-chart',h:'Problema aberto, longo.',e:'Problema aberto e longo: o Fable, de forma combinada, depois de tentar o Opus.'},
-    {r:'Themis',t:'Simular um acordo de precatório com várias variáveis: deságio, prazo, custo do capital e cenários',k:'fable',i:'i-calc',h:'Muitas variáveis, várias rodadas.',e:'Simulação com muitas variáveis e idas e vindas: Fable, combinado. O cálculo final é refeito por quem fecha a operação.'},
-    {r:'Advocacia',t:'Estudo completo de uma tese nova nos tribunais superiores, com várias rodadas de pesquisa',k:'fable',i:'i-scale',h:'Quando o Opus não bastou.',e:'Pesquisa profunda e iterativa: Fable, depois de tentar o Opus. Cada julgado, aberto na fonte.'},
+    {r:'Advocacia',t:'Estratégia de um caso complexo com 60 documentos, que o Opus não fechou',k:'fable',i:'i-chart',h:'Problema aberto, longo.',e:'Problema aberto e longo: o Fable, de forma combinada, depois de tentar o Opus.'},
+    {r:'Themis',t:'Simular um acordo de precatório (deságio, prazo, custo do capital e cenários) que o Opus não fechou',k:'fable',i:'i-calc',h:'Muitas variáveis, várias rodadas.',e:'Simulação com muitas variáveis e idas e vindas: Fable, combinado. O cálculo final é refeito por quem fecha a operação.'},
+    {r:'Advocacia',t:'Estudo completo de uma tese nova nos tribunais superiores, depois que o Opus não bastou',k:'fable',i:'i-scale',h:'Quando o Opus não bastou.',e:'Pesquisa profunda e iterativa: Fable, depois de tentar o Opus. Cada julgado, aberto na fonte.'},
     {r:'Administrativo',t:'Montar a lista de compras do mês a partir dos pedidos das áreas',k:'haiku',i:'i-folder',h:'Juntar itens numa lista.',e:'Consolidar pedidos numa lista: tarefa leve.'},
     {r:'Administrativo',t:'Redigir o comunicado da mudança de sede para clientes e fornecedores',k:'sonnet',i:'i-mail',h:'Um comunicado bem escrito.',e:'Redação com tom institucional: Sonnet, no modelo do escritório.'},
     {r:'Administrativo',t:'Montar o checklist de pré-chegada de um colaborador novo: e-mail, acessos, máquina',k:'sonnet',i:'i-check',h:'Organizar passos numa lista.',e:'Estruturar um checklist é redação organizada: Sonnet.'},
-    {r:'Administrativo',t:'Comparar três cotações de prestador com critérios diferentes e recomendar uma',k:'opus',i:'i-calc',h:'Critérios cruzados, não só preço.',e:'Comparar propostas com critérios cruzados pede o sênior.'},
+    {r:'Administrativo',t:'Comparar três propostas de prestador com escopos, prazos e multas diferentes, cruzando com o contrato atual, e recomendar uma',k:'opus',i:'i-calc',h:'Critérios cruzados, não só preço.',e:'Comparar propostas com critérios cruzados pede o sênior.'},
     {r:'Supervisão',t:'Montar a agenda de prazos da semana a partir das publicações já separadas',k:'haiku',i:'i-clock',h:'Extrair datas, não decidir.',e:'Extrair datas e montar a agenda: tarefa leve. O prazo fatal, confira no sistema.'},
     {r:'Supervisão',t:'Escrever a devolutiva de revisão para um advogado novo, com tom construtivo',k:'sonnet',i:'i-spell',h:'Texto curto, tom cuidadoso.',e:'Redação com tom cuidadoso: Sonnet.'},
-    {r:'Supervisão',t:'Revisar a petição do estagiário apontando o que falta antes de assinar',k:'opus',i:'i-scale',h:'Revisar exige cruzar peça e fatos.',e:'Revisão com critério, cruzando peça, fatos e tese: Opus. Quem assina confere.'},
+    {r:'Supervisão',t:'Revisar a petição de um colega contra os documentos do processo e a tese, apontando o que falta antes de assinar',k:'opus',i:'i-scale',h:'Revisar exige cruzar peça e fatos.',e:'Revisão com critério, cruzando peça, fatos e tese: Opus. Quem assina confere.'},
     {r:'Sócios',t:'Preparar a fala de abertura da reunião mensal com os três pontos do mês',k:'sonnet',i:'i-mic',h:'Texto curto a partir de pontos.',e:'Redação a partir de pontos definidos: Sonnet.'},
     {r:'Sócios',t:'Analisar a precificação de um contrato de RPPS em três faixas, com custos e margem',k:'opus',i:'i-calc',h:'Várias variáveis, uma análise.',e:'Análise com várias variáveis e fontes: Opus. O número final é decisão de quem fecha.'},
-    {r:'Sócios',t:'Mapear riscos e oportunidades de um nicho novo a partir de relatórios setoriais, em várias rodadas',k:'fable',i:'i-chart',h:'Pesquisa profunda, aberta.',e:'Pesquisa profunda e iterativa num tema aberto: Fable, combinado.'},
+    {r:'Sócios',t:'Mapear riscos e oportunidades de um nicho novo a partir de relatórios setoriais, depois que o Opus não bastou',k:'fable',i:'i-chart',h:'Pesquisa profunda, aberta.',e:'Pesquisa profunda e iterativa num tema aberto: Fable, combinado.'},
     {r:'Themis',t:'Extrair de um lote de ofícios o número do processo, o valor e a data',k:'haiku',i:'i-doc',h:'Extrair campos em volume.',e:'Extração em volume de campos simples: Haiku. Conferência por amostra.'},
     {r:'Themis',t:'E-mail padrão de atualização ao investidor sobre o andamento de um precatório',k:'sonnet',i:'i-mail',h:'Comunicação padrão.',e:'Mensagem a partir do modelo: Sonnet, sem dado sensível do investidor no chat.'},
     {r:'Financeiro',t:'Classificar os lançamentos "a verificar" do extrato por tipo',k:'haiku',i:'i-calc',h:'Classificar linhas.',e:'Classificação de linhas: tarefa leve. O lançamento certo, confira com quem pagou.'},
-    {r:'Financeiro',t:'E-mail à contabilidade com os comprovantes de retenção na fonte, completo',k:'sonnet',i:'i-mail',h:'E-mail completo e claro.',e:'Redação clara com os anexos certos: Sonnet. O envio sai pelo e-mail do financeiro.'},
+    {r:'Financeiro',t:'E-mail completo à contabilidade com os comprovantes de retenção na fonte',k:'sonnet',i:'i-mail',h:'E-mail completo e claro.',e:'Redação clara com os anexos certos: Sonnet. O envio sai pelo e-mail do financeiro.'},
     {r:'Financeiro',t:'Checklist de fechamento do mês para mandar à contabilidade',k:'sonnet',i:'i-check',h:'Organizar passos.',e:'Checklist a partir da rotina: Sonnet.'}
   ];
   var ROUNDS=[{n:'Manhã',h0:8},{n:'Tarde',h0:13},{n:'Plantão',h0:18}], RS=9, GOAL=2000;
@@ -862,20 +900,20 @@ body.shake{animation:bodyshake .4s}
       el.innerHTML='<svg class="ico"><use href="#'+c.i+'"/></svg><span><em class="role">'+c.r+(c.r===G.area?' · sua área':(c.r==='Todos'?' · vale mais':''))+'</em>'+c.t+'</span><span class="hint" title="Dica (custa 30 pontos)">?</span><span class="tip">'+c.h+'</span>'; deck.appendChild(el); setTimeout(function(){sfx('tick')},i*90); });
     setTimeout(function(){ urg.forEach(function(i){ var el=deck.querySelector('.card[data-i="'+i+'"]'); if(!el) return; el.classList.add('urgent'); el.setAttribute('data-exp',String(Date.now()+25000)); var tb=document.createElement('i'); tb.className='tbar'; el.appendChild(tb); setTimeout(function(){ el.classList.remove('urgent'); el.removeAttribute('data-exp'); },25000); }); sfx('tick'); }, 1500);
     $('total').textContent=SHOWN; $('roundPill').textContent=ROUNDS[round].n+' · fase '+(round+1)+' de 3'; $('nextRound').hidden=true; done=false; banner(ROUNDS[round].n,'fase '+(round+1)+' de 3');
-    $('fb').className='fb'; $('fb').textContent= round===0 ? 'As demandas são do dia a dia do escritório, do financeiro e da Themis; a etiqueta diz de quem é. Comece pela que parecer mais simples. Se errar, o cartão volta; a dica (?) custa 30 pontos.' : (round===1 ? 'Tarde: as demandas ficam mais parecidas entre si. Olhe o tamanho da tarefa, não o assunto.' : 'Plantão: a assinatura da fase está mais curta. Cada escolha pesada conta.'); updHud(); }
-  $('startDay').addEventListener('click',function(){ if(!gate('jogo')) return; started=true; buildDeal(); $('startWrap').hidden=true; $('gameBody').hidden=false; $('rankAv').querySelector('use').setAttribute('href','#pj-'+(G.pj||1)); $('playerPill').textContent=(G.nome||'você')+' · '+G.area; dealRound(); sfx('big'); speak('Bom dia'+(G.nome?', '+G.nome:'')+'. Começa a manhã.'); });
+    $('fb').className='fb'; $('fb').textContent= round===0 ? 'As demandas são do dia a dia do escritório, do financeiro e da Themis; a etiqueta diz de quem é. Comece pela que parecer mais simples. Se errar, o cartão volta; a dica (?) custa 30 pontos.' : (round===1 ? 'Tarde: olhe o tamanho da tarefa, não o assunto.' : 'Plantão: a assinatura da fase está mais curta. Cada escolha pesada conta.'); updHud(); }
+  $('startDay').addEventListener('click',function(){ if(!gate('jogo')) return; started=true; practiceD=!!G.done.jogo; if(!practiceD) store.set(W+'snapD',String(G.pts)); buildDeal(); $('startWrap').hidden=true; $('gameBody').hidden=false; $('rankAv').querySelector('use').setAttribute('href','#pj-'+(G.pj||1)); $('playerPill').textContent=(G.nome||'você')+' · '+G.area; dealRound(); sfx('big'); speak('Bom dia'+(G.nome?', '+G.nome:'')+'. Começa a manhã.'); });
   deck.addEventListener('click',function(e){ var h=e.target.closest('.hint'); var card=e.target.closest('.card'); if(!card) return;
     if(puMode){ puMode=false; $('pu').classList.remove('on'); pu--; var c=T[+card.getAttribute('data-i')]; var wrong=names.filter(function(k){return k!==c.k}).sort(function(){return Math.random()-.5}).slice(0,2); wrong.forEach(function(k){ var s=document.querySelector('.slot[data-k="'+k+'"]'); s.classList.add('dimmed'); setTimeout(function(){s.classList.remove('dimmed')},8000); }); $('fb').className='fb'; $('fb').textContent='A supervisão descartou dois modelos para essa demanda. Você tem oito segundos.'; sfx('tick'); updHud(); return; }
-    if(!h||card.classList.contains('tipped')) return; card.classList.add('tipped'); hints++; addPts(-30); var r=h.getBoundingClientRect(); floatPts(r.left,r.top,'−30',true); sfx('tick'); updHud(); });
+    if(!h||card.classList.contains('tipped')) return; card.classList.add('tipped'); hints++; if(!practiceD) addPts(-30); var r=h.getBoundingClientRect(); floatPts(r.left,r.top,'−30',true); sfx('tick'); updHud(); });
   $('pu').addEventListener('click',function(){ if(pu<=0||done) return; puMode=!puMode; this.classList.toggle('on',puMode); toast(puMode?'Agora toque na demanda em dúvida.':'Cancelado.'); });
   function slotAt(x,y){ var slots=document.querySelectorAll('.slot'); for(var i=0;i<slots.length;i++){ var r=slots[i].getBoundingClientRect(); if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom) return slots[i]; } return null; }
   function drop(card,slot,px,py){ var c=T[+card.getAttribute('data-i')], k=slot.getAttribute('data-k'), fb=$('fb'); roundSpent+=weight[k]; totalSpent+=weight[k];
-    if(k===c.k){ hits++; roundHits++; left--; counts[k]++; totalIdeal+=weight[k]; slot.querySelector('.cnt').textContent=counts[k]+(counts[k]===1?' cartão':' cartões'); streak++; combo=Math.min(5,1+Math.floor(streak/2)); var gain=100*combo, tags=[]; if(combo>1) tags.push('combo ×'+combo); if(card.classList.contains('mine')){ gain=Math.round(gain*1.5); tags.push('sua área ×1,5'); }
-      var exp=+(card.getAttribute('data-exp')||0); if(exp&&Date.now()<exp){ gain*=2; urgentHits++; tags.push('urgente ×2'); if(urgentHits>=2) award('urgent'); } if(!card.classList.contains('tipped')) clean++; dayPts+=gain; addPts(gain,px,py+30);
+    if(k===c.k){ hits++; roundHits++; left--; counts[k]++; totalIdeal+=weight[k]; slot.querySelector('.cnt').textContent=counts[k]+(counts[k]===1?' cartão':' cartões'); streak++; combo=Math.min(5,1+Math.floor(streak/2)); var gain=100*combo, tags=[]; if(combo>1) tags.push('combo ×'+combo); if(card.classList.contains('mine')){ gain=Math.round(gain*1.5); tags.push(c.r===G.area?'sua área ×1,5':'vale mais ×1,5'); }
+      var exp=+(card.getAttribute('data-exp')||0); if(exp&&Date.now()<exp){ gain*=2; urgentHits++; tags.push('urgente ×2'); if(urgentHits>=2) award('urgent'); } if(!card.classList.contains('tipped')) clean++; dayPts+=gain; if(!practiceD) addPts(gain,px,py+30); else floatPts(px,py+30,'+'+fmt(gain));
       slot.classList.add('good'); setTimeout(function(){slot.classList.remove('good')},600); card.classList.add('gone'); setTimeout(function(){card.remove()},350);
       fb.className='fb ok'; fb.innerHTML='<svg class="ico"><use href="#i-check"/></svg> '+label[k]+' · +'+fmt(gain)+(tags.length?' ('+tags.join(', ')+')':'')+'. '+c.e; sfx('ok'); flash('ok'); bumpPts(); comboBig(combo); sparks(px,py+30); speak('Certo. '+c.e); if(combo===5) award('combo5'); if(left===1) toast('Última demanda da fase!'); }
-    else { streak=0; combo=1; addPts(-20,px,py); slot.classList.add('bad'); setTimeout(function(){slot.classList.remove('bad')},500); card.classList.add('back'); setTimeout(function(){card.classList.remove('back')},450); var heavier=names.indexOf(k)>names.indexOf(c.k); if(heavier) wasteRound=false;
-      fb.className='fb bad'; fb.textContent=(heavier?('Dá certo, mas gasta '+Math.round(weight[k]/weight[c.k])+' vezes mais do que precisa. Tente um modelo mais leve.'):('Vai ficar raso para essa tarefa. Suba um degrau.'))+' −20.'; sfx('bad'); flash('bad'); shakeBody(); comboBig(0); speak(fb.textContent);
+    else { streak=0; combo=1; if(!practiceD) addPts(-20,px,py); slot.classList.add('bad'); setTimeout(function(){slot.classList.remove('bad')},500); card.classList.add('back'); setTimeout(function(){card.classList.remove('back')},450); var heavier=names.indexOf(k)>names.indexOf(c.k); if(heavier) wasteRound=false;
+      fb.className='fb bad'; fb.textContent=(heavier?'Dá certo, mas gasta bem mais do que precisa. Tente um modelo mais leve.':'Vai ficar raso para essa tarefa. Tente um modelo mais forte.')+' −20.'; sfx('bad'); flash('bad'); shakeBody(); comboBig(0); speak(fb.textContent);
       card.setAttribute('data-tries',(+(card.getAttribute('data-tries')||0))+1); if(+card.getAttribute('data-tries')>=2){ left--; totalIdeal+=weight[c.k]; card.classList.add('gone'); setTimeout(function(){card.remove()},350); fb.textContent+=' A sugerida era '+label[c.k]+'. '+c.e; } }
     updHud(); if(roundSpent>=roundCap&&left>0){ endRound(true); return; } if(left===0) endRound(false); }
   function endRound(burst){ done=true; var fb=$('fb'); puMode=false; $('pu').classList.remove('on'); Array.prototype.forEach.call(deck.querySelectorAll('.card'),function(el){el.classList.add('gone')});
@@ -887,10 +925,10 @@ body.shake{animation:bodyshake .4s}
   function finish(){ var sc=$('score'); sc.hidden=false; var total=SHOWN; if(totalIdeal>0&&totalSpent<=totalIdeal*1.15) award('econ'); if(hits===total) award('day');
     var stars=roundStars.reduce(function(a,c){return a+c},0), fin=stars>=8?3:(stars>=5?2:1), L=lvl(); var newBest=dayPts>best&&best>0; if(dayPts>best){best=dayPts;store.set(W+'best',String(best));$('best').textContent=fmt(best);}
     var sh=(newBest?'<div class="stampx">Novo recorde</div>':'')+'<div class="stars">'+[1,2,3].map(function(i){return '<span class="'+(i<=fin?'on':'')+'">★</span>'}).join('')+'</div>'; var okDay=hits>=15;
-    if(okDay){ sc.className='score'; sc.innerHTML=sh+'<div class="big">Dia concluído: '+fmt(dayPts)+' pontos no dia, patente '+L.n+'</div>'+hits+' de '+total+' demandas no modelo certo'+(dayPts>=GOAL?', meta do dia batida':'')+'. Consumo: '+fmt(totalSpent)+' contra '+fmt(totalIdeal)+' do caminho ideal. Na prática, lembre: comece pelo mais leve e confira tudo antes de usar.'; banner('Dia concluído', fmt(dayPts)+' pontos'); completeMission('jogo',0); }
-    else { sc.className='score low'; sc.innerHTML=sh+'<div class="big">'+fmt(dayPts)+' pontos no dia. Vale rever a cena</div>'+hits+' de '+total+' no modelo certo. Releia o que cada personagem faz melhor (toque nos cartões para virar) e refaça o dia. O ponto central: o peso do modelo tem de combinar com o tamanho da tarefa.<div class="roundbtn"><button type="button" id="redo">Refazer o dia</button></div>'; speak(hits+' de '+total+'. Vale rever a cena.'); var rd=$('redo'); if(rd) rd.addEventListener('click',function(){ location.reload(); }); }
+    if(okDay){ sc.className='score'; sc.innerHTML=sh+'<div class="big">Dia concluído: '+fmt(dayPts)+' pontos no dia, patente '+L.n+'</div>'+hits+' de '+total+' demandas no modelo certo'+(dayPts>=GOAL?', meta do dia batida':'')+'. Consumo: '+fmt(totalSpent)+' contra '+fmt(totalIdeal)+' do caminho ideal. Na prática, lembre: comece pelo mais leve e confira tudo antes de usar.'; banner('Dia concluído', fmt(dayPts)+' pontos'); completeMission('jogo',0); store.del(W+'snapD'); if(practiceD) sc.insertAdjacentHTML('beforeend','<p class="note">Dia de treino: os pontos já contaram na primeira vez.</p>'); }
+    else { sc.className='score low'; sc.innerHTML=sh+'<div class="big">'+fmt(dayPts)+' pontos no dia. Vale rever a cena</div>'+hits+' de '+total+' no modelo certo. Releia o que cada modelo faz melhor (toque nos cartões para virar) e refaça o dia. O ponto central: o peso do modelo tem de combinar com o tamanho da tarefa.<div class="roundbtn"><button type="button" id="redo">Refazer o dia</button></div>'; speak(hits+' de '+total+'. Vale rever a cena.'); var rd=$('redo'); if(rd) rd.addEventListener('click',function(){ location.reload(); }); }
     sc.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-  var drag=null, dx=0, dy=0;
+  var drag=null, dx=0, dy=0, practiceD=false;
   deck.addEventListener('pointerdown',function(e){ if(e.target.closest('.hint')||puMode) return; var card=e.target.closest('.card'); if(!card||done) return; e.preventDefault(); var r=card.getBoundingClientRect(); dx=e.clientX-r.left; dy=e.clientY-r.top;
     var ph=document.createElement('div'); ph.className='card'; ph.style.visibility='hidden'; ph.style.width=r.width+'px'; ph.style.height=r.height+'px'; ph.id='ph'; card.parentNode.insertBefore(ph,card); card.classList.remove('deal'); card.classList.add('drag'); card.style.width=r.width+'px'; card.style.left=(e.clientX-dx)+'px'; card.style.top=(e.clientY-dy)+'px'; drag=card; try{card.setPointerCapture(e.pointerId)}catch(err){} });
   document.addEventListener('pointermove',function(e){ if(!drag) return; drag.style.left=(e.clientX-dx)+'px'; drag.style.top=(e.clientY-dy)+'px'; var s=slotAt(e.clientX,e.clientY); Array.prototype.forEach.call(document.querySelectorAll('.slot'),function(el){el.classList.toggle('over',el===s)}); });
@@ -902,26 +940,32 @@ body.shake{animation:bodyshake .4s}
   /* ---------- missão 5: desafio ---------- */
   var chk=$('chk'), chkLab=$('chkLab'); chk.checked=store.get(W+'chal')==='1'; chkLab.classList.toggle('on',chk.checked);
   chk.addEventListener('change',function(){ if(!gate('desafio')){ this.checked=false; return; } store.set(W+'chal',this.checked?'1':'0'); chkLab.classList.toggle('on',this.checked); if(this.checked){ award('desafiante'); if(!G.done.desafio) completeMission('desafio',300); else saveResult(); toast('Desafio registrado. Agora conte no grupo.'); } });
-  $('shareMission').addEventListener('click',function(){ copy('*Desafio da semana 1*: resolvi "____" no *Haiku/Sonnet* em ____ minutos. Antes eu faria no modelo maior.','Linha copiada. Preencha e mande no grupo.'); });
+  $('shareMission').addEventListener('click',function(){ copy('*Desafio da semana 1*: resolvi "____" no *Haiku/Sonnet* em ____ minutos. Antes eu faria no modelo maior.','Linha copiada. Preencha sem nome de cliente e mande no grupo.'); });
   $('shareAll').addEventListener('click',function(){ var n=Object.keys(G.med).length; copy('*Trilha Claude, semana 1*: '+(G.nome?G.nome+' fechou':'fechei')+' com *'+fmt(G.pts)+' pontos*, patente *'+lvl().n+'* e '+n+' medalha'+(n===1?'':'s')+'.','Resultado copiado. Cole no zap.'); });
-  function copy(msg,okmsg){ var ok=function(){toast(okmsg)}; if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok,function(){toast(msg)})} else toast(msg); }
+  function copy(msg,okmsg){ var ok=function(){toast(okmsg)}; var plainB=function(){ try{ var ta=document.createElement('textarea'); ta.value=msg; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='0'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0,msg.length); var r=document.execCommand('copy'); ta.remove(); if(r) ok(); else toast(msg); }catch(e){ toast(msg); } }; if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(msg).then(ok,plainB); } else plainB(); }
 
   /* ---------- registro na planilha do Google (sem login) ---------- */
   var SHEET_URL='https://script.google.com/macros/s/AKfycbw6FyIok6SJnmjvYbCFVMdOEw6OBTrL9RfrvlrsGxg-eGpQr-xEVFZ7S95HGtpH6RB3ew/exec';  /* termina em /exec */
   var PID=store.get('hts-pid'); if(!PID){ PID='p-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8); store.set('hts-pid',PID); }
   function note(t){ $('saveNote').textContent=t; }
+  var lastBody='';
+  function rowBody(tipo){ return JSON.stringify({id:PID,tipo:tipo,semana:1,apelido:G.nome,area:G.area,personagem:G.pj,uso_antes:G.freq,pontos:G.pts,patente:lvl().n,missoes:Object.keys(G.done).length,medalhas:Object.keys(G.med).length,desafio:!!G.done.desafio,concluido:!!G.done.desafio,missao_atual:Math.min(curMission()+1,5),quando:new Date().toISOString()}); }
   function postRow(tipo){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return Promise.resolve(false);
-    var body={id:PID,tipo:tipo,semana:1,apelido:G.nome,area:G.area,personagem:G.pj,uso_antes:G.freq,pontos:G.pts,patente:lvl().n,missoes:Object.keys(G.done).length,medalhas:Object.keys(G.med).length,desafio:!!G.done.desafio,concluido:!!G.done.desafio,missao_atual:Math.min(curMission()+1,5),quando:new Date().toISOString()};
-    return fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}).then(function(){return true}).catch(function(){return false}); }
-  function saveResult(){ postRow('progresso').then(function(ok){ if(ok) note('Progresso salvo neste aparelho. Envio à planilha realizado, sem confirmação de recebimento.'); else note('Progresso salvo neste aparelho. A sincronização com a planilha está indisponível.'); }); }
+    var body=rowBody(tipo); lastBody=body; store.set(W+'sync','1');
+    return fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body})
+      .then(function(r){ return r.text(); }).then(function(tx){ if(/^ok/.test(tx)){ store.del(W+'sync'); return 'ok'; } throw new Error(tx); })
+      .catch(function(){ return fetch(SHEET_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:body}).then(function(){ return 'sent'; }).catch(function(){ return false; }); }); }
+  function saveResult(){ postRow('progresso').then(function(r){ note(r==='ok'?'Progresso registrado na planilha da equipe.':(r==='sent'?'Progresso salvo neste aparelho e enviado à planilha da equipe.':'Sem conexão agora: o progresso fica salvo neste aparelho e vai para a planilha quando você abrir a página de novo.')); }); }
+  window.addEventListener('online',function(){ if(G.entered&&store.get(W+'sync')) saveResult(); });
+  window.addEventListener('pagehide',function(){ if(lastBody&&store.get(W+'sync')&&navigator.sendBeacon){ try{ navigator.sendBeacon(SHEET_URL,new Blob([lastBody],{type:'text/plain;charset=utf-8'})); }catch(e){} } });
   function savePresence(){ postRow('presenca').then(function(){ loadTeam(); }); }
-  function loadTeam(){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return; fetch(SHEET_URL+'?acao=placar&semana=1').then(function(r){return r.json()}).then(function(d){ var n=d.entraram||0, c=d.concluiram||0; $('teamTxt').innerHTML=n?('Equipe na trilha: <b>'+n+'</b> '+(n===1?'pessoa já entrou':'pessoas já entraram')+' · <b>'+c+'</b> '+(c===1?'concluiu':'concluíram')+' a semana. O placar é de todos.'):'Equipe na trilha: assim que colegas entrarem, a contagem aparece aqui.'; }).catch(function(){}); }
-  $('signNote').textContent='Seu progresso fica salvo neste aparelho e é enviado à planilha da equipe, sem login.';
+  function loadTeam(){ if(!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) return; fetch(SHEET_URL+'?acao=placar&semana=1').then(function(r){return r.json()}).then(function(d){ var n=Math.max(0,parseInt(d.entraram,10)||0), c=Math.max(0,parseInt(d.concluiram,10)||0); $('teamTxt').innerHTML=n?('Equipe na trilha: <b>'+n+'</b> '+(n===1?'pessoa já entrou':'pessoas já entraram')+' · <b>'+c+'</b> '+(c===1?'concluiu':'concluíram')+' a semana. O placar é de todos.'):'Equipe na trilha: assim que colegas entrarem, a contagem aparece aqui.'; }).catch(function(){}); }
+  $('signNote').textContent='Sem login. Vão para a planilha da equipe: nome, área, frequência de uso, pontos, patente e missões. Servem para a contagem da equipe e para a direção acompanhar a meta; no grupo, só aparece o total.';
   loadTeam(); if(G.entered){ saveResult(); }
 
   /* ---------- rodapé ---------- */
-  $('duvida').addEventListener('click',function(){ copy('Oi! Estou na semana 1 da Trilha Claude e fiquei com uma dúvida: ','Mensagem copiada. Cole no zap.'); });
-  $('reset').addEventListener('click',function(){ var bt=this; if(!bt._arm){ bt._arm=true; bt.textContent='Apagar todo o progresso? Toque de novo para confirmar'; bt.style.borderColor='var(--red)'; setTimeout(function(){ bt._arm=false; bt.textContent='Recomeçar a semana'; bt.style.borderColor=''; },5000); return; } ['pts','done','med','in','chal','best','freq'].forEach(function(k){store.del(W+k)}); location.reload(); });
+  $('duvida').addEventListener('click',function(){ copy('Oi! Estou na semana 1 da Trilha Claude e fiquei com uma dúvida: ','Mensagem copiada. Cole no grupo.'); });
+  $('reset').addEventListener('click',function(){ var bt=this; if(!bt._arm){ bt._arm=true; bt.textContent='Apagar todo o progresso? Toque de novo para confirmar'; bt.style.borderColor='var(--red)'; setTimeout(function(){ bt._arm=false; bt.textContent='Recomeçar a semana'; bt.style.borderColor=''; },5000); return; } ['pts','done','med','in','chal','best','freq','snapQ','snapD','sync'].forEach(function(k){store.del(W+k)}); location.reload(); });
 
   renderHud(); drawMap();
   if(G.entered){ $('storyTxt').innerHTML=STORY[curMission()]; }
